@@ -4,6 +4,7 @@ public class Categoria {
     private long id;
     private String nome;
     private String descricao;
+    private boolean status;
     
     public long getId() {
         return id;
@@ -22,5 +23,11 @@ public class Categoria {
     }
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+    public boolean isStatus() {
+        return status;
+    }
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
