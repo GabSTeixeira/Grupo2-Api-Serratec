@@ -1,34 +1,27 @@
 package br.com.loja_gp2.loja_gp2.dto.PedidoDTO;
 
-import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
+import java.util.List;
 
-public class PedidoRequestDTO {
-    private Usuario usuario;
-    private String observacao;
-    private Enum formaPagamento;
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
-
-    public Enum getFormaPagamento() {
-        return formaPagamento;
-    }
-
-    public void setFormaPagamento(Enum formaPagamento) {
-        this.formaPagamento = formaPagamento;
-    }
-
-    public Usuario getUsuario() {
+import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
+import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
+public class PedidoRequestDTO extends PedidoBaseDTO {
+    private UsuarioRequestDTO usuario;
+    private List<ItemRequestDTO> listaItens;
+ 
+    public UsuarioRequestDTO getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(UsuarioRequestDTO usuario) {
         this.usuario = usuario;
+    }
+
+    public List<ItemRequestDTO> getListaItens() {
+        return listaItens;
+    }
+
+    public void setListaItens(List<ItemRequestDTO> listaItens) {
+        this.listaItens = listaItens;
     }
     
 }

@@ -1,9 +1,11 @@
 package br.com.loja_gp2.loja_gp2.dto.UsuarioDTO;
 
+import br.com.loja_gp2.loja_gp2.model.modelPuro.EnumTipoPerfil;
+
 public class UsuarioRequestDTO extends UsuarioBaseDTO {
     private String senha;
     private String telefone;
-    private Enum perfil;
+    private EnumTipoPerfil perfil;
 
     public String getSenha() {
         return senha;
@@ -21,12 +23,11 @@ public class UsuarioRequestDTO extends UsuarioBaseDTO {
         this.telefone = telefone;
     }
 
-    public Enum getPerfil() {
+    public EnumTipoPerfil getPerfil() {
         return perfil;
     }
 
-    public void setPerfil(Enum perfil) {
+    public void setPerfil(EnumTipoPerfil perfil) {
         this.perfil = perfil;
-    }
-    
+    } 
 }

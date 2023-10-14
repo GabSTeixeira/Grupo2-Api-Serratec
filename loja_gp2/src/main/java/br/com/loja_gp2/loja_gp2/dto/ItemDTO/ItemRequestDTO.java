@@ -1,53 +1,25 @@
 package br.com.loja_gp2.loja_gp2.dto.ItemDTO;
 
-import br.com.loja_gp2.loja_gp2.model.modelPuro.Pedido;
-import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
+import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
+import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 
-public class ItemRequestDTO {
-    private Pedido pedido;
-    private Produto produto;
-    private double quantidade;
-    private double desconto;
-    private double acrescimo;
-
-    public Pedido getPedido() {
+public class ItemRequestDTO extends ItemBaseDTO {
+    private PedidoRequestDTO pedido;
+    private ProdutoRequestDTO produto;
+    
+    public PedidoRequestDTO getPedido() {
         return pedido;
     }
 
-    public void setPedido(Pedido pedido) {
+    public void setPedido(PedidoRequestDTO pedido) {
         this.pedido = pedido;
     }
 
-    public Produto getProduto() {
+    public ProdutoRequestDTO getProduto() {
         return produto;
     }
 
-    public void setProduto(Produto produto) {
+    public void setProduto(ProdutoRequestDTO produto) {
         this.produto = produto;
     }
-
-    public double getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public double getDesconto() {
-        return desconto;
-    }
-
-    public void setDesconto(double desconto) {
-        this.desconto = desconto;
-    }
-
-    public double getAcrescimo() {
-        return acrescimo;
-    }
-    
-    public void setAcrescimo(double acrescimo) {
-        this.acrescimo = acrescimo;
-    }
-    
 }

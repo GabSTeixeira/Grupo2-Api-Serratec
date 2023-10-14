@@ -2,15 +2,16 @@ package br.com.loja_gp2.loja_gp2.dto.LogDTO;
 
 import java.util.Date;
 
-import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
+import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
 
 public class LogResponseDTO {
     private long id;
-    private Enum tipoAlter;
+    private EnumTipoAlteracaoLog tipoAlter;
     private Date dataAlter;
     private double valorOriginal;
     private double valorAtual;;
-    private Usuario usuario;
+    private UsuarioResponseDTO usuario;
 
     public long getId() {
         return id;
@@ -20,11 +21,11 @@ public class LogResponseDTO {
         this.id = id;
     }
 
-    public Enum getTipoAlter() {
+    public EnumTipoAlteracaoLog getTipoAlter() {
         return tipoAlter;
     }
 
-    public void setTipoAlter(Enum tipoAlter) {
+    public void setTipoAlter(EnumTipoAlteracaoLog tipoAlter) {
         this.tipoAlter = tipoAlter;
     }
 
@@ -52,12 +53,11 @@ public class LogResponseDTO {
         this.valorAtual = valorAtual;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioResponseDTO getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(UsuarioResponseDTO usuario) {
         this.usuario = usuario;
     }
-
 }
