@@ -1,4 +1,4 @@
-package br.com.loja_gp2.loja_gp2.model;
+package br.com.loja_gp2.loja_gp2.model.modelPuro;
 
 public class Categoria {
     private long id;
@@ -23,7 +23,4 @@ public class Categoria {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-
-
-    
 }
