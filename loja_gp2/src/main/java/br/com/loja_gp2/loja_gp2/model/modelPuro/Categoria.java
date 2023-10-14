@@ -21,7 +21,7 @@ public class Categoria {
     @Column(nullable = false)
     private boolean status;
     
-    @OneToMany(mappedBy = "produto")
+    @OneToMany(mappedBy = "categoria")
     private List<Produto> listaProdutos;
 
     public long getId() {

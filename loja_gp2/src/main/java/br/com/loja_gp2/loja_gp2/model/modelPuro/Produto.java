@@ -25,7 +25,7 @@ public class Produto {
     @Column(nullable = false)
     private String descricao;
     @ManyToOne
-    @JoinColumn(name = "idCategoria", nullable = false)
+    @JoinColumn(name = "idcategoria", nullable = false)
     @JsonBackReference
     private Categoria categoria;
     @Column(nullable = false)

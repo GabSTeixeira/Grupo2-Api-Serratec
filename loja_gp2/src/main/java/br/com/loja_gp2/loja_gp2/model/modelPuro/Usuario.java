@@ -34,9 +34,9 @@ public class Usuario {
     private EnumTipoPerfil perfil;
     @Column(nullable = false)
     private boolean status;
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "usuario")
     private List<Pedido> listaPedido;
-    @OneToMany(mappedBy = "log")
+    @OneToMany(mappedBy = "usuario")
     private List<Log> listaLog;
     
     public long getId() {

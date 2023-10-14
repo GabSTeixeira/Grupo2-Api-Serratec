@@ -27,7 +27,7 @@ public class Pedido {
     @JoinColumn(name = "idusario", nullable = false)
     @JsonBackReference
     private Usuario usuario;
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "pedido")
     private List<Item> listaItens;
     @Column(nullable = false)
     private Date dataPedido;
