@@ -1,14 +1,14 @@
 package br.com.loja_gp2.loja_gp2.dto.ItemDTO;
 
 public abstract class ItemBaseDTO {
-    private double quantidade;
+    private long quantidade;
     private double desconto;
     private double acrescimo;
     
-    public double getQuantidade() {
+    public long getQuantidade() {
         return quantidade;
     }
-    public void setQuantidade(double quantidade) {
+    public void setQuantidade(long quantidade) {
         this.quantidade = quantidade;
     }
     public double getDesconto() {

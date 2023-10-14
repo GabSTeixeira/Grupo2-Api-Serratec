@@ -5,7 +5,7 @@ public class ProdutoBaseDTO {
     private long id;
     private String nome;
     private double valor;
-    private double estoque;
+    private long estoque;
     private String descricao;
 
     public String getNome() {
@@ -24,11 +24,11 @@ public class ProdutoBaseDTO {
         this.valor = valor;
     }
 
-    public double getEstoque() {
+    public long getEstoque() {
         return estoque;
     }
 
-    public void setEstoque(double estoque) {
+    public void setEstoque(long estoque) {
         this.estoque = estoque;
     }
 

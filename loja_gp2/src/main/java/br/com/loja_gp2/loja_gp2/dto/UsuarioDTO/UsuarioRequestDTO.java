@@ -1,6 +1,6 @@
 package br.com.loja_gp2.loja_gp2.dto.UsuarioDTO;
 
-import br.com.loja_gp2.loja_gp2.model.modelPuro.EnumTipoPerfil;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 
 public class UsuarioRequestDTO extends UsuarioBaseDTO {
     private String senha;
