@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.com.loja_gp2.loja_gp2.common.ConversorData;
 import br.com.loja_gp2.loja_gp2.model.error.ErrorResposta;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceForbiddenException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceGatewayTimeoutException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceUnauthorizedException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -34,6 +37,36 @@ public class RestExceptionHandler {
         ErrorResposta erro = new ErrorResposta(400, "Bad Request", ex.getMessage(), data);
 
         return new ResponseEntity<>(erro, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceUnauthorizedException.class)
+    public ResponseEntity<ErrorResposta> handlerResourceUnauthorizedException(ResourceUnauthorizedException ex){
+        
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(401, "Unauthorized", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceForbiddenException.class)
+    public ResponseEntity<ErrorResposta> handlerResourceForbiddenException(ResourceForbiddenException ex){
+
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(403, "Forbidden", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro,HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ResourceGatewayTimeoutException.class)
+    public ResponseEntity<ErrorResposta> handlerResourceGatewayTimeoutException(ResourceGatewayTimeoutException ex){
+
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(504, "Gateway Timeout", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro, HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler(Exception.class)
