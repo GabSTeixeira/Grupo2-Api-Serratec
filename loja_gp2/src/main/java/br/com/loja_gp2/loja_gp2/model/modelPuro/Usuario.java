@@ -103,7 +103,6 @@ public class Usuario {
         this.status = status;
     }
 
-
     public List<Pedido> getListaPedido() {
         return listaPedido;
     }
@@ -118,5 +117,18 @@ public class Usuario {
 
     public void setListaLog(List<Log> listaLog) {
         this.listaLog = listaLog;
-    }  
+    } 
+
+    @Override
+    public String toString() {
+        return "\"Usuario [id "+ id +
+        ", nome = " + nome +
+        ", email = " + email +
+        ", senha = " + senha +
+        ", telefone = " + telefone +
+        ", dataCadastro = " + dataCadastro.toString() +
+        ", perfil = " + perfil.toString() +
+        ", status = " + status +
+        "]";
+    }
 }

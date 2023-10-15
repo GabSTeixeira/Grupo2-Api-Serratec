@@ -21,6 +21,8 @@ public class Log {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(nullable = false)
+    private String tabela;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EnumTipoAlteracaoLog tipoAlter;
     @Column(nullable = false)
@@ -33,12 +35,30 @@ public class Log {
     @JoinColumn(name = "idusuario", nullable = false)
     @JsonBackReference
     private Usuario usuario;
-    
+
+    public Log() {
+    }
+
+    public Log(String tabela, EnumTipoAlteracaoLog tipoAlter, String valorOriginal, String valorAtual, Usuario usuario) {
+        this.id = 0;
+        this.dataAlter = new Date();
+        this.tabela = tabela;
+        this.tipoAlter = tipoAlter;
+        this.valorOriginal = valorOriginal;
+        this.valorAtual = valorAtual;
+        this.usuario = usuario;
+    }
     public long getId() {
         return id;
     }
     public void setId(long id) {
         this.id = id;
+    }
+    public String getTabela() {
+        return tabela;
+    }
+    public void setTabela(String tabela) {
+        this.tabela = tabela;
     }
     public EnumTipoAlteracaoLog getTipoAlter() {
         return tipoAlter;

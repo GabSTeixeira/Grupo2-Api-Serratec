@@ -29,7 +29,7 @@ public class UsuarioController {
 
         List<UsuarioResponseDTO> listaUsuario = usuarioService.buscarTodosUsuario();
 
-        return ResponseEntity.ok(listaUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(listaUsuario);
     }
 
     @GetMapping("/{id}")
@@ -44,6 +44,13 @@ public class UsuarioController {
         UsuarioResponseDTO usuarioCriado = usuarioService.cadastrarUsuario(usuario);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> putOne(@PathVariable long id, @RequestBody UsuarioRequestDTO usuario) {
+        UsuarioResponseDTO usuarioAlterado = usuarioService.alterarUsuario(id, usuario);
+
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioAlterado);
     }
 
     @PutMapping("/desativar/{id}")
