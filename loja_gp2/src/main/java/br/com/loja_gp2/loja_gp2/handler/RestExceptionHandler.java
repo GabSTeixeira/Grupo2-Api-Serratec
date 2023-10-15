@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.com.loja_gp2.loja_gp2.common.ConversorData;
 import br.com.loja_gp2.loja_gp2.model.error.ErrorResposta;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -34,6 +36,16 @@ public class RestExceptionHandler {
         ErrorResposta erro = new ErrorResposta(400, "Bad Request", ex.getMessage(), data);
 
         return new ResponseEntity<>(erro, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceInternalServerErrorException.class)
+    public ResponseEntity<ErrorResposta> handlerResourceInternalServerErrorException (ResourceInternalServerErrorException ex) {
+        
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(500, "Internal Server Error", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)

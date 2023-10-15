@@ -4,10 +4,7 @@ public class ResourceNotFoundException extends RuntimeException {
     
     private static final long serialVersionUID = 1L;
 
-    public ResourceNotFoundException(String mensagem){
-        super(mensagem);
+    public ResourceNotFoundException(long id, String elemento){
+        super("Não foi possivel localizar o "+elemento+" com Id: "+ id);
     }
-
-    // Not Found = 404
-    // Bad Request = 400
 }
