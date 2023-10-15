@@ -12,6 +12,8 @@ import br.com.loja_gp2.loja_gp2.model.error.ErrorResposta;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceForbiddenException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceGatewayTimeoutException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
+
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceUnauthorizedException;
 
@@ -67,6 +69,16 @@ public class RestExceptionHandler {
         ErrorResposta erro = new ErrorResposta(504, "Gateway Timeout", ex.getMessage(), data);
 
         return new ResponseEntity<>(erro, HttpStatus.GATEWAY_TIMEOUT);
+    }
+    
+    @ExceptionHandler(ResourceInternalServerErrorException.class)
+    public ResponseEntity<ErrorResposta> handlerResourceInternalServerErrorException (ResourceInternalServerErrorException ex) {
+        
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(500, "Internal Server Error", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
