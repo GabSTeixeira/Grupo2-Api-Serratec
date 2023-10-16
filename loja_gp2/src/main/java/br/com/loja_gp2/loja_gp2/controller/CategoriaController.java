@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.CategoriaService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api/categoria")
@@ -40,7 +41,7 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaResponseDTO> postOne(@RequestBody CategoriaResponseDTO categoria) {
+    public ResponseEntity<CategoriaResponseDTO> postOne(@RequestBody CategoriaRequestDTO categoria) {
         CategoriaResponseDTO categoriaCriada = categoriaService.cadastrarCategoria(categoria);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaCriada);

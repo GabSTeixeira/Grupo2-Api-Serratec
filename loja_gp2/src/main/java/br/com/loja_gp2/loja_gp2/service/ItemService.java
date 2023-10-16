@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
+import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
@@ -31,7 +32,7 @@ public class ItemService {
     private ModelMapper modelMapper;
 
 
-    public List<ItemResponseDTO> cadastrarItensPedido (Pedido pedido, List<ItemRequestDTO> listaItensReq) {
+    public List<ItemResponseDTO> cadastrarItensPedido (PedidoRequestDTO pedido, List<ItemRequestDTO> listaItensReq) {
         List<Item> listaItens = new ArrayList<>();
         
         for (ItemRequestDTO itemReq : listaItensReq) {
