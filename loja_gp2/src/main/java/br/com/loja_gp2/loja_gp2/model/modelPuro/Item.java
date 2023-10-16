@@ -71,16 +71,7 @@ public class Item {
     public double getValorTotal() {
         return valorTotal;
     }
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
-<<<<<<< HEAD
-    } 
-=======
-    }
-
     public void calcularValorTotal () {
         this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
     }
-    
->>>>>>> fba8fda14821ce2c3ea1074f8ea945a634f66955
 }
