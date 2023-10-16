@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 @Entity
 public class Item {
     @Id
@@ -75,7 +77,10 @@ public class Item {
     }
 
     public void calcularValorTotal () {
-        this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
+        try {
+            this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
     }
-    
 }

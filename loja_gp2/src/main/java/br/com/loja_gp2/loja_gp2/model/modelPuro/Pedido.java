@@ -35,6 +35,10 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private EnumTipoPagamento formaPagamento;
     @Column(nullable = false)
+    private double descontoPedido;
+    @Column(nullable = false)
+    private double acrescimoPedido;
+    @Column(nullable = false)
     private double descontoTotal;
     @Column(nullable = false)
     private double acrescimoTotal;
@@ -71,6 +75,18 @@ public class Pedido {
     }
     public void setFormaPagamento(EnumTipoPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
+    }
+    public double getDescontoPedido() {
+        return descontoPedido;
+    }
+    public void setDescontoPedido(double descontoPedido) {
+        this.descontoPedido = descontoPedido;
+    }
+    public double getAcrescimoPedido() {
+        return acrescimoPedido;
+    }
+    public void setAcrescimoPedido(double acrescimoPedido) {
+        this.acrescimoPedido = acrescimoPedido;
     }
     public double getDescontoTotal() {
         return descontoTotal;
