@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 @Entity
 public class Item {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -72,10 +73,6 @@ public class Item {
     public double getValorTotal() {
         return valorTotal;
     }
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
     public void calcularValorTotal () {
         try {
             this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;

@@ -29,7 +29,7 @@ public class CategoriaService {
         List<Categoria> listaCategoria = categoriaRepository.findAll();
         
         List<CategoriaResponseDTO> listaCategoriaResponse = listaCategoria.stream()
-        .map(e -> modelMapper.map(e, CategoriaResponseDTO.class)).collect(Collectors.toList());
+        .map(c -> modelMapper.map(c, CategoriaResponseDTO.class)).collect(Collectors.toList());
 
         return listaCategoriaResponse;
     }
@@ -53,7 +53,7 @@ public class CategoriaService {
 
         try {
             categoria = categoriaRepository.save(categoria);
-        } catch (Exception e) {
+        } catch (Exception c) {
             throw new ResourceBadRequestException("categoria", "Não foi possível cadastrar");
         }
 
