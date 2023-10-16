@@ -40,26 +40,20 @@ public class ItemService {
              * 
              if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto()) {
                  throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
-                }
+             }
             */
+                
 
             Produto produtoDoItem = modelMapper.map(itemReq.getProduto(), Produto.class);
             Item item = modelMapper.map(itemReq, Item.class);
             
+            // retirar do estoque de produto. o estoque de produto dentro de item vai estar desatualizado, discutir se deve ou não atualizar com os outros   
+            //ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(item.getQuantidade());
+            
+            //item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
+            item.calcularValorTotal();
 
-            item.setProduto(produtoDoItem);
-
-            // retirar do estoque de produto. o estoque de produto dentro de item vai estar desatualizado, discutir se deve ou não atualizar com os outros
-            //produtoService.retirarEstoque(item.getQuantidade());
-
-
-
-
-
-           // listaItensResponse.add()
-
-
-           
+            listaItens.add(item);
         }
         
         return null;
