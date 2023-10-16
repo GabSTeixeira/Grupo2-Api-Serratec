@@ -98,13 +98,13 @@ public class UsuarioService {
         alteracaoUsuario.setId(id);
 
         Usuario usuarioOriginal = new Usuario();
-        Usuario usuarioAlterado = usuarioEncontrado.get();
+        Usuario usuarioAlterado = usuarioEncontrado.get(); //
         
         try {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
             BeanUtils.copyProperties(alteracaoUsuario, usuarioAlterado, "status","dataCadastro","listaLog","listaPedido");
             
-            usuarioAlterado = usuarioRepository.save(usuarioAlterado);
+            usuarioAlterado = usuarioRepository.save(usuarioAlterado); //
 
             logService.registrarLog(new Log(
                 Usuario.class.getSimpleName(), 
@@ -113,11 +113,11 @@ public class UsuarioService {
                 ObjetoToJson.conversor(usuarioAlterado),
                 usuarioAlterado));
 
-        } catch (Exception e) {
+        } catch (Exception e) {//
             throw new ResourceBadRequestException("usuario","Não foi possivel alterar");
         }
 
-        return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);
+        return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);//
     }
 
     @Transactional
