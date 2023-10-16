@@ -19,7 +19,7 @@ import br.com.loja_gp2.loja_gp2.repository.PedidoRepository;
 @Service
 public class PedidoService {
     
-
+    //alou
     @Autowired
     private PedidoRepository pedidoRepository;
 
