@@ -125,10 +125,10 @@ public class UsuarioService {
         mudarStatusUsuario(id, false);
     }
 
+
     @Transactional
     public void retivarUsuario(long id) {
         mudarStatusUsuario(id, true);
-
     }
 
     // vai mudar o sistema de usuario que fez a modificação provavelmente, então seria necessario mais um parametro aqui
