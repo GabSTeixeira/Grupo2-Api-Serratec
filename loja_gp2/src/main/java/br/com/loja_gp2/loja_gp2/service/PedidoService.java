@@ -39,9 +39,7 @@ public class PedidoService {
     @Transactional
     public PedidoResponseDTO cadastrarPedido (PedidoRequestDTO pedidoRequest) {
 
-        if (pedidoRequest.getId() <= 0) {
-            throw new ResourceBadRequestException("Usuario", "Não foi possivel cadastrar o pedido");
-        }
+        pedidoRequest.setId(0);
         
         UsuarioResponseDTO usuarioEncontradoResponse = usuarioService.buscarUsuarioPorId(pedidoRequest.getId());
         Usuario usuario = modelMapper.map(usuarioEncontradoResponse, Usuario.class);

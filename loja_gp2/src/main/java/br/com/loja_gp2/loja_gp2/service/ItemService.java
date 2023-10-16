@@ -2,6 +2,7 @@ package br.com.loja_gp2.loja_gp2.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +37,18 @@ public class ItemService {
         for (ItemRequestDTO itemReq : listaItensReq) {
             
             // verifica se não é possivel realizar a venda para aquele produto    
-            //if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto().getId()) {
-            //     throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
-            //}
+            if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto().getId())) {
+                 throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
+            }
             
             Produto produtoDoItem = modelMapper.map(itemReq.getProduto(), Produto.class);
             Item item = modelMapper.map(itemReq, Item.class);
 
             
             // retirar do estoque de produto. o estoque de produto dentro de item vai estar desatualizado, discutir se deve ou não atualizar com os outros   
-            //ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(produtoDoItem, item.getQuantidade());
+            ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(produtoDoItem.getId(), item.getQuantidade());
             
-            //item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
+            item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
             item.calcularValorTotal();
 
             listaItens.add(item);
@@ -62,13 +63,7 @@ public class ItemService {
         }
 
 
-
-        List<ItemResponseDTO> listaItemResponse;
-
-        
-        return null;
-
-
-
+        return listaItens.stream().map(i -> modelMapper.map(i, ItemResponseDTO.class))
+        .collect(Collectors.toList());
     }
 }
