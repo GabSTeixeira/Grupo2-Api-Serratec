@@ -17,6 +17,7 @@ import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
@@ -70,7 +71,12 @@ public class UsuarioService {
         try {
             usuario = usuarioRepository.save(usuario);
 
-            logService.registrarLog(new Log(Usuario.class.getSimpleName(), EnumTipoAlteracaoLog.CREATE, ObjetoToJson.conversor(usuario), ObjetoToJson.conversor(usuario), usuario));
+            logService.registrarLog(new Log(
+                Usuario.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.CREATE, 
+                ObjetoToJson.conversor(usuario), 
+                ObjetoToJson.conversor(usuario), 
+                usuario));
 
         } catch (Exception e) {
             throw new ResourceBadRequestException("usuario", "Não foi possivel cadastrar");
@@ -78,55 +84,83 @@ public class UsuarioService {
 
         return modelMapper.map(usuario, UsuarioResponseDTO.class);
     }
-
+    
+    @Transactional
     public UsuarioResponseDTO alterarUsuario(long id, UsuarioRequestDTO usuarioRequest) {
-
-        Usuario usuarioUpdate = modelMapper.map(usuarioRequest, Usuario.class);
 
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
         if (usuarioEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "usuario");
         }
-        usuarioUpdate.setId(id);
 
-        Usuario usuario = usuarioEncontrado.get();
+        Usuario alteracaoUsuario = modelMapper.map(usuarioRequest, Usuario.class);
+        alteracaoUsuario.setId(id);
 
+        Usuario usuarioOriginal = new Usuario();
+        Usuario usuarioAlterado = usuarioEncontrado.get();
+        
         try {
-            BeanUtils.copyProperties(usuarioUpdate, usuario, "status","dataCadastro","listaLog","listaPedido");
-            usuario = usuarioRepository.save(usuario);
+            BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
+            BeanUtils.copyProperties(alteracaoUsuario, usuarioAlterado, "status","dataCadastro","listaLog","listaPedido");
+            
+            usuarioAlterado = usuarioRepository.save(usuarioAlterado);
+
+            logService.registrarLog(new Log(
+                Usuario.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.UPDATE, 
+                ObjetoToJson.conversor(usuarioOriginal), 
+                ObjetoToJson.conversor(usuarioAlterado),
+                usuarioAlterado));
+
         } catch (Exception e) {
             throw new ResourceBadRequestException("usuario","Não foi possivel alterar");
         }
 
-        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+        return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);
     }
 
-
+    @Transactional
     public void inativarUsuario(long id) {
-
-        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
-
-        if (usuarioEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "usuario");
-        }
-
-        usuarioEncontrado.get().setStatus(false);
-
-        usuarioRepository.save(usuarioEncontrado.get());   
+        mudarStatusUsuario(id, false);
     }
 
+    @Transactional
     public void retivarUsuario(long id) {
+        mudarStatusUsuario(id, true);
 
+    }
+
+    // vai mudar o sistema de usuario que fez a modificação provavelmente, então seria necessario mais um parametro aqui
+    private void mudarStatusUsuario(long id, boolean status) {
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
         if (usuarioEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "usuario");
         }
 
-        usuarioEncontrado.get().setStatus(true);
-
-        usuarioRepository.save(usuarioEncontrado.get());   
+        Usuario usuarioAlterado = usuarioEncontrado.get();
+        
+        
+        Usuario usuarioOriginal = new Usuario();
+        
+        
+        try {
+            BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
+            
+            
+            usuarioAlterado.setStatus(status);
+            
+            usuarioRepository.save(usuarioAlterado);   
+            
+            logService.registrarLog(new Log(
+                Usuario.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.UPDATE, 
+                ObjetoToJson.conversor(usuarioOriginal), 
+                ObjetoToJson.conversor(usuarioAlterado), 
+                usuarioAlterado));
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
     }
-
 }
