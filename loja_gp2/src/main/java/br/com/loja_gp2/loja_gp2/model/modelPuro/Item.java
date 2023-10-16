@@ -74,5 +74,8 @@ public class Item {
         this.valorTotal = valorTotal;
     }
 
+    public void calcularValorTotal () {
+        this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
+    }
     
 }

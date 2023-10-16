@@ -37,8 +37,10 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     private List<Pedido> listaPedido;
     @OneToMany(mappedBy = "usuario")
-    private List<Log> listaLog;
-    
+    private transient List<Log> listaLog;
+    // transient é para as conversões objetos em json funcionar
+
+
     public long getId() {
         return id;
     }
@@ -103,7 +105,6 @@ public class Usuario {
         this.status = status;
     }
 
-
     public List<Pedido> getListaPedido() {
         return listaPedido;
     }
@@ -118,5 +119,5 @@ public class Usuario {
 
     public void setListaLog(List<Log> listaLog) {
         this.listaLog = listaLog;
-    }  
+    } 
 }
