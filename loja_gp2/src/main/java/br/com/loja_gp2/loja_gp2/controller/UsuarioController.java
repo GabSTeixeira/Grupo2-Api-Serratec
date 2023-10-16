@@ -55,7 +55,7 @@ public class UsuarioController {
 
     @PutMapping("/ativar/{id}")
     public ResponseEntity<?> activeOne(@PathVariable long id) {
-        usuarioService.retivarUsuario(id);
+        usuarioService.reativarUsuario(id);
 
         return ResponseEntity.ok().build();
     }

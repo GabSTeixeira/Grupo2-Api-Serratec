@@ -79,7 +79,7 @@ public class UsuarioService {
         usuarioRepository.save(usuarioEncontrado.get());   
     }
 
-    public void retivarUsuario(long id) {
+    public void reativarUsuario(long id) {
 
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
