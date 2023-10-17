@@ -10,6 +10,8 @@ public abstract class PedidoBaseDTO {
     private EnumTipoPagamento formaPagamento;
     private double descontoTotal;
     private double acrescimoTotal;
+    private double acrescimoPedido;
+    private double descontoPedido;
     private double valorTotal;
     private String observacao;
     
@@ -43,6 +45,23 @@ public abstract class PedidoBaseDTO {
     public void setAcrescimoTotal(double acrescimoTotal) {
         this.acrescimoTotal = acrescimoTotal;
     }
+
+    public double getAcrescimoPedido() {
+        return acrescimoPedido;
+    }
+
+    public void setAcrescimoPedido(double acrescimoPedido) {
+        this.acrescimoPedido = acrescimoPedido;
+    }
+
+    public double getDescontoPedido() {
+        return descontoPedido;
+    }
+
+    public void setDescontoPedido(double descontoPedido) {
+        this.descontoPedido = descontoPedido;
+    }
+
     public double getValorTotal() {
         return valorTotal;
     }

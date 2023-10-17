@@ -7,7 +7,6 @@ import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 public enum EnumTipoPerfil {
     ADMIN, CLIENTE;
 
-
     @JsonCreator
     public static EnumTipoPerfil fromString(String value) throws ResourceBadRequestException {
         for (EnumTipoPerfil perfil : EnumTipoPerfil.values()) {

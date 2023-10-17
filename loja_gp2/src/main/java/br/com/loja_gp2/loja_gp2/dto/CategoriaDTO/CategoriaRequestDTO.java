@@ -1,8 +1,17 @@
 package br.com.loja_gp2.loja_gp2.dto.CategoriaDTO;
 
 public class CategoriaRequestDTO {
+    private long id;
     private String nome;
     private String descricao;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
