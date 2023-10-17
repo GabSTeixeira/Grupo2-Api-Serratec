@@ -56,11 +56,31 @@ public class ProdutoService {
             throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
         }
         produto = produtoRepository.save(produto);
-    } catch (Exception p) {
+    } catch (Exception e) {
         throw new ResourceBadRequestException("nao foi possivel cadastrar o produto"); 
     }
     return modelMapper.map(produto, ProdutoResponseDTO.class);
    }
+
+   public ProdutoResponseDTO atualizarProduto(ProdutoRequestDTO produtoRequest, Long id){
+    
+    Produto produto = modelMapper.map(produtoRequest, Produto.class);
+    buscarProdutoPorId(id);
+
+    produto.setId(id);
+
+    try {
+        if(produto.getEstoque() < 0){
+            throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+        }
+        produto = produtoRepository.save(produto);
+    } catch (Exception e) {
+        throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
+    }
+
+    return modelMapper.map(produto, ProdutoResponseDTO.class);
+    
+    }
 
    public void inativarProduto(Long id) {
 
