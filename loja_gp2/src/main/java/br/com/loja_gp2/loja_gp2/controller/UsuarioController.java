@@ -44,50 +44,53 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
     })
     public ResponseEntity<UsuarioResponseDTO> getOneById(@PathVariable long id) {
+        
         UsuarioResponseDTO usuarioEncontrado = usuarioService.buscarUsuarioPorId(id);
         
         return ResponseEntity.status(HttpStatus.OK).body(usuarioEncontrado);
     }
+    
+    @PostMapping
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Usuario Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
     })
-    @PostMapping
     public ResponseEntity<UsuarioResponseDTO> postOne(@RequestBody UsuarioRequestDTO usuario) {
         UsuarioResponseDTO usuarioCriado = usuarioService.cadastrarUsuario(usuario);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
     }
 
+    @PutMapping("/{id}")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
     })
-    @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> putOne(@PathVariable long id, @RequestBody UsuarioRequestDTO usuario) {
         UsuarioResponseDTO usuarioAlterado = usuarioService.alterarUsuario(id, usuario);
 
         return ResponseEntity.status(HttpStatus.OK).body(usuarioAlterado);
     }
 
+    @PutMapping("/desativar/{id}")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
     })
-    @PutMapping("/desativar/{id}")
     public ResponseEntity<?> inativeOne(@PathVariable long id) {
         usuarioService.inativarUsuario(id);
 
         return ResponseEntity.ok().build();
     }
+    
+    @PutMapping("/ativar/{id}")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
     })
-    @PutMapping("/ativar/{id}")
     public ResponseEntity<?> activeOne(@PathVariable long id) {
         usuarioService.retivarUsuario(id);
 

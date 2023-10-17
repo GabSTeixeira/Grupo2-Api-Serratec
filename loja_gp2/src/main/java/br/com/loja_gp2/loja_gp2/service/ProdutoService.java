@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
@@ -20,6 +21,9 @@ public class ProdutoService {
     
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private CategoriaService categoriaService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -46,21 +50,29 @@ public class ProdutoService {
 
    public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest){
 
-    Produto produto = modelMapper.map(produtoRequest, Produto.class);
-    produto.setId(0);
+        Produto produto = modelMapper.map(produtoRequest, Produto.class);
+        produto.setId(0);
 
-    produto.setStatus(true);
+        produto.setStatus(true);
 
-    try{
-        if(produto.getEstoque() < 0) {
-            throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+        CategoriaResponseDTO categoriaResponse;
+        try{
+            
+            if(produto.getEstoque() < 0) {
+                throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+            }
+            produto = produtoRepository.save(produto);
+
+            categoriaResponse = categoriaService.buscarCategoriaPorId(produto.getCategoria().getId());
+            
+        } catch (Exception p) {
+            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto"); 
         }
-        produto = produtoRepository.save(produto);
-    } catch (Exception e) {
-        throw new ResourceBadRequestException("nao foi possivel cadastrar o produto"); 
+
+        ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
+        produtoResponse.setCategoria(categoriaResponse);
+        return produtoResponse;
     }
-    return modelMapper.map(produto, ProdutoResponseDTO.class);
-   }
 
    public ProdutoResponseDTO atualizarProduto(ProdutoRequestDTO produtoRequest, Long id){
     

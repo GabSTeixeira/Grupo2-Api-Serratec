@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.TransactionScoped;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
@@ -31,26 +34,22 @@ public class ItemService {
     @Autowired
     private ModelMapper modelMapper;
 
-
-    public List<ItemResponseDTO> cadastrarItensPedido (PedidoRequestDTO pedido, List<ItemRequestDTO> listaItensReq) {
+    
+    public List<ItemResponseDTO> cadastrarItensPedido (Pedido pedido) {
         List<Item> listaItens = new ArrayList<>();
-        
-        for (ItemRequestDTO itemReq : listaItensReq) {
+
+        for (Item item : pedido.getListaItens()) {
             
             // verifica se não é possivel realizar a venda para aquele produto    
-            if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto().getId())) {
-                 throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
+            if (item.getQuantidade() > produtoService.verificarEstoque(item.getProduto().getId())) {
+                 throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+item.getProduto().getId());
             }
-            
-            Produto produtoDoItem = modelMapper.map(itemReq.getProduto(), Produto.class);
-            Item item = modelMapper.map(itemReq, Item.class);
-
-            
-            // retirar do estoque de produto. o estoque de produto dentro de item vai estar desatualizado, discutir se deve ou não atualizar com os outros   
-            ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(produtoDoItem.getId(), item.getQuantidade());
+                     
+            // retirar do estoque de produto.  
+            ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(item.getProduto().getId(), item.getQuantidade());
             
             item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
-            item.calcularValorTotal();
+            item.setPedido(pedido);
 
             listaItens.add(item);
         }
@@ -62,7 +61,6 @@ public class ItemService {
         } catch (Exception e) {
             throw new ResourceBadRequestException("Não foi possivel cadastrar os itens deste pedido");
         }
-
 
         return listaItens.stream().map(i -> modelMapper.map(i, ItemResponseDTO.class))
         .collect(Collectors.toList());
