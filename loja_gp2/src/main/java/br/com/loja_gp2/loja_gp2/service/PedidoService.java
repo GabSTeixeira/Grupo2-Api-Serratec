@@ -2,19 +2,24 @@ package br.com.loja_gp2.loja_gp2.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.catalina.connector.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
+import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Pedido;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
@@ -39,42 +44,76 @@ public class PedidoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public List<PedidoResponseDTO> buscarTodosPedidos() {
+
+        List<Pedido> listaPedido = pedidoRepository.findAll();
+
+        List<PedidoResponseDTO> listaPedidoResponse = listaPedido.stream()
+        .map(p -> modelMapper.map(p, PedidoResponseDTO.class)).collect(Collectors.toList());
+
+        return listaPedidoResponse;
+    }
+
+    public PedidoResponseDTO buscarPedidoPorId(long id){
+        Optional<Pedido> pedidoEncontrado = pedidoRepository.findById(id);
+
+        if(pedidoEncontrado.isEmpty()){
+            throw new ResourceNotFoundException(id, "pedido");
+        }
+
+        return modelMapper.map(pedidoEncontrado.get(), PedidoResponseDTO.class);
+    }
 
     @Transactional
     public PedidoResponseDTO cadastrarPedido (PedidoRequestDTO pedidoRequest) {
 
+        // define o id como zero
         pedidoRequest.setId(0);
         
-        // cadastra os intens na tabela intem
-        
-        
-        UsuarioResponseDTO usuarioEncontradoResponse = usuarioService.buscarUsuarioPorId(pedidoRequest.getId());
-        Usuario usuario = modelMapper.map(usuarioEncontradoResponse, Usuario.class);
-        
+        //converte o pedido request pra pedido normal
         Pedido pedido = modelMapper.map(pedidoRequest, Pedido.class);
         
+        // busca o usuario para inserir no pedido
+        UsuarioResponseDTO usuarioEncontradoResponse = usuarioService.buscarUsuarioPorId(pedido.getUsuario().getId());
+        Usuario usuario = modelMapper.map(usuarioEncontradoResponse, Usuario.class);
+        
+        //define as coisas do pedido
         pedido.setUsuario(usuario);
         pedido.setDataPedido(new Date());
         
+        List<ItemResponseDTO> listaItensResponse;
         
-        try {
-            List<ItemResponseDTO> listaItensResponse = itemService.cadastrarItensPedido(pedidoRequest, pedidoRequest.getListaItens());
+        try {  
             
-            List<Item> listaItens = listaItensResponse.stream().map(i-> modelMapper.map(i, Item.class)).collect(Collectors.toList());
             
-            pedido.setListaItens(listaItens);
-
+            // calcula todas as informações individuais dos itens
+            List<Item> itensParaCalculo = pedidoRequest.getListaItens().stream()
+            .map(i -> modelMapper.map(i, Item.class)).collect(Collectors.toList());
+            
+            // verifica se não tem nada negativo ou nulo na lista de itens
+            
+            itensParaCalculo.forEach(i -> i.calcularValorTotal());
+            
+            // define a lista atualizada e depois calcula as informações do pedido
+            pedido.setListaItens(itensParaCalculo);
             pedido.calcularTotais();
 
-            pedido = pedidoRepository.save(pedido);
-
+            // salva o pedido e os itens deste pedido nas devidas tabelas
+            pedido = pedidoRepository.save(pedido); 
+            listaItensResponse = itemService.cadastrarItensPedido(pedido);
+        
+            
         } catch (Exception e) {
             throw new ResourceBadRequestException(Pedido.class.getSimpleName(), "Não foi possivel cadastrar o pedido");
         }
         
-        return modelMapper.map(pedido, PedidoResponseDTO.class);
+        PedidoResponseDTO pedidoResponse = modelMapper.map(pedido, PedidoResponseDTO.class);
+        pedidoResponse.setListaItens(listaItensResponse);
+
+        return pedidoResponse;
 
     }
+
 
 
 }

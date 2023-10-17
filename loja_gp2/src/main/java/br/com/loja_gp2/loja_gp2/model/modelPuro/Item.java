@@ -1,5 +1,6 @@
 package br.com.loja_gp2.loja_gp2.model.modelPuro;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "idpedido", nullable = false)
     @JsonBackReference
     private Pedido pedido;
@@ -73,6 +74,11 @@ public class Item {
     public double getValorTotal() {
         return valorTotal;
     }
+
+    private void verificarNegativos () {
+        
+    }
+
     public void calcularValorTotal () {
         try {
             this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
