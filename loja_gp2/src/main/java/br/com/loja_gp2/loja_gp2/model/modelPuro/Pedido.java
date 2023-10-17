@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPagamento;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 
 @Entity
 public class Pedido {
@@ -34,6 +35,10 @@ public class Pedido {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EnumTipoPagamento formaPagamento;
+    @Column(nullable = false)
+    private double descontoPedido;
+    @Column(nullable = false)
+    private double acrescimoPedido;
     @Column(nullable = false)
     private double descontoTotal;
     @Column(nullable = false)
@@ -72,6 +77,18 @@ public class Pedido {
     public void setFormaPagamento(EnumTipoPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
+    public double getDescontoPedido() {
+        return descontoPedido;
+    }
+    public void setDescontoPedido(double descontoPedido) {
+        this.descontoPedido = descontoPedido;
+    }
+    public double getAcrescimoPedido() {
+        return acrescimoPedido;
+    }
+    public void setAcrescimoPedido(double acrescimoPedido) {
+        this.acrescimoPedido = acrescimoPedido;
+    }
     public double getDescontoTotal() {
         return descontoTotal;
     }
@@ -95,5 +112,22 @@ public class Pedido {
     }
     public void setObservacao(String observacao) {
         this.observacao = observacao;
-    }  
+    } 
+
+    public void calcularTotais() {
+
+    
+        for (Item item: this.listaItens) {
+            this.acrescimoTotal += item.getAcrescimo();
+            this.descontoTotal += item.getDesconto();
+
+            this.valorTotal += item.getValorTotal();
+        }
+
+
+        this.valorTotal += this.acrescimoPedido - this.descontoPedido;
+
+    }
+
+
 }
