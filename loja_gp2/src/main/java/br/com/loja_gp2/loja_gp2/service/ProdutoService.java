@@ -74,16 +74,18 @@ public class ProdutoService {
         return produtoResponse;
     }
 
-   public ProdutoResponseDTO atualizarProduto(ProdutoRequestDTO produtoRequest, Long id){
+   public ProdutoResponseDTO alterarProduto( Long id, ProdutoRequestDTO produtoRequest){
     
     Produto produto = modelMapper.map(produtoRequest, Produto.class);
-    buscarProdutoPorId(id);
-
+    Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+    produto.setStatus(produtoEncontrado.get().isStatus());
     produto.setId(id);
 
     try {
         if(produto.getEstoque() < 0){
             throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+        } else if(produtoEncontrado.isEmpty()){
+             throw new ResourceNotFoundException(id, "produto");
         }
         produto = produtoRepository.save(produto);
     } catch (Exception e) {
