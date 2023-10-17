@@ -2,6 +2,7 @@ package br.com.loja_gp2.loja_gp2.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -15,8 +16,10 @@ import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
+import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Pedido;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
@@ -41,6 +44,25 @@ public class PedidoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public List<PedidoResponseDTO> buscarTodosPedidos() {
+
+        List<Pedido> listaPedido = pedidoRepository.findAll();
+
+        List<PedidoResponseDTO> listaPedidoResponse = listaPedido.stream()
+        .map(p -> modelMapper.map(p, PedidoResponseDTO.class)).collect(Collectors.toList());
+
+        return listaPedidoResponse;
+    }
+
+    public PedidoResponseDTO buscarPedidoPorId(long id){
+        Optional<Pedido> pedidoEncontrado = pedidoRepository.findById(id);
+
+        if(pedidoEncontrado.isEmpty()){
+            throw new ResourceNotFoundException(id, "pedido");
+        }
+
+        return modelMapper.map(pedidoEncontrado.get(), PedidoResponseDTO.class);
+    }
 
     @Transactional
     public PedidoResponseDTO cadastrarPedido (PedidoRequestDTO pedidoRequest) {
@@ -91,6 +113,7 @@ public class PedidoService {
         return pedidoResponse;
 
     }
+
 
 
 }
