@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.ProdutoService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 
 @RestController
@@ -26,6 +28,10 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @GetMapping
+     @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produtos retornados com sucesso" ),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+    })
     public ResponseEntity<List<ProdutoResponseDTO>> getAll() {
 
         List<ProdutoResponseDTO> listaProduto = produtoService.buscarTodosProdutos();
@@ -34,6 +40,10 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+    })
     public ResponseEntity<ProdutoResponseDTO> getById(@PathVariable Long id) {
 
         ProdutoResponseDTO produtoEncontrado = produtoService.buscarProdutoPorId(id);
@@ -42,6 +52,10 @@ public class ProdutoController {
     }
 
     @PostMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Produto Criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+    })
     public ResponseEntity<ProdutoResponseDTO> postOne(@RequestBody ProdutoRequestDTO produto) {
         ProdutoResponseDTO produtoCriado = produtoService.cadastrarProduto(produto);
 
@@ -49,6 +63,11 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produto alterado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+    })
     public ResponseEntity<ProdutoResponseDTO> putOne(@PathVariable Long id, @RequestBody ProdutoRequestDTO produto) {
         //ProdutoResponseDTO produtoAlterado = produtoService.alterarProduto(id,produto);
 
@@ -57,6 +76,11 @@ public class ProdutoController {
     }
 
     @PutMapping("/desativar/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+    })
     public ResponseEntity<?> inativeOne(@PathVariable Long id){
         produtoService.inativarProduto(id);
 
@@ -64,6 +88,11 @@ public class ProdutoController {
     }
 
      @PutMapping("/ativar/{id}")
+     @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+    })
     public ResponseEntity<?> activateOne(@PathVariable Long id){
         produtoService.reativarProduto(id);
 
