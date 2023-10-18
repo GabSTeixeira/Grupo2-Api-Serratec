@@ -69,10 +69,6 @@ public class ProdutoService {
         Categoria categoria = modelMapper.map(categoriaEncontrada, Categoria.class);
            
         List<Produto> produtosEncontrados = produtoRepository.findAllByCategoria(categoria);
-        
-        if (produtosEncontrados == null || produtosEncontrados.size() <= 0){
-            throw new ResourceNotFoundException("Nenhum produto encontrado para a categoria informada.");
-        }
 
         List<ProdutoResponseDTO> listaProdutoResponse = produtosEncontrados.stream().map(p -> modelMapper.map(p, ProdutoResponseDTO.class)).collect(Collectors.toList());
 
