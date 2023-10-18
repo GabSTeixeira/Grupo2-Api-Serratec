@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.ProdutoService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -28,6 +29,10 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @GetMapping
+    @Operation(
+        summary = "Retorna todos os produtos",
+        description = "Esta requisição obtem todos os produtos"
+    )
      @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produtos retornados com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
@@ -40,6 +45,10 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+        summary = "Obtem por id",
+        description = "Esta requisição obtem o produto por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado")
@@ -52,6 +61,10 @@ public class ProdutoController {
     }
 
     @GetMapping("/categoria/{id}")
+    @Operation(
+        summary = "Obtem por id",
+        description = "Esta requisição obtem o produto por id"
+    )
     public ResponseEntity<List<ProdutoResponseDTO>> findByCategoria(@PathVariable Long id) {
 
         List<ProdutoResponseDTO> listaProduto = produtoService.buscarProdutosPorCategoria(id);
@@ -60,6 +73,10 @@ public class ProdutoController {
     }
 
     @PostMapping
+    @Operation(
+        summary = "Adicionar",
+        description = "Esta requisição adiciona um produto"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Produto Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -71,6 +88,10 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+        summary = "Atualizar por id",
+        description = "Esta requisição atualiza o produto por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -83,6 +104,10 @@ public class ProdutoController {
     }
 
     @PutMapping("/desativar/{id}")
+    @Operation(
+        summary = "Desativa por id",
+        description = "Esta requisição desativa o produto por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
@@ -95,6 +120,10 @@ public class ProdutoController {
     }
 
      @PutMapping("/ativar/{id}")
+     @Operation(
+        summary = "Ativa por id",
+        description = "Esta requisição ativa o produto por id"
+    )
      @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
