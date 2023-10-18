@@ -91,6 +91,9 @@ public class UsuarioService {
         usuario.setStatus(true);
         
         try {
+
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+
             usuario = usuarioRepository.save(usuario);
 
         } catch (Exception e) {

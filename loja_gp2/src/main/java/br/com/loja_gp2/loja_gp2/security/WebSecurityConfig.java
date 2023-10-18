@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
              * Daqui pra baixo é onde vamos futucar e fazer nossas validações dinamicas.
              * Aqui vamos informar as rotas que vão ou não precisar de autenticação e ou autorização.
              */
-            .antMatchers(HttpMethod.POST, "/api/usuario", "/api/usuario/login")
+            .antMatchers(HttpMethod.POST, "/api/usuario/cadastrar", "/api/usuario/login")
             .permitAll()// informo que todos podem acessar esses endpoints sem autenticação.
             .anyRequest()
             // .permitAll();

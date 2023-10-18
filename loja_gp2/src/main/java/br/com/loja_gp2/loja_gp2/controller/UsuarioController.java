@@ -54,7 +54,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioEncontrado);
     }
     
-    @PostMapping
+    @PostMapping("/cadastrar")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Usuario Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -101,7 +101,7 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-     @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UsuarioLoginResponseDTO> logar(@RequestBody UsuarioLoginRequestDTO usuariologinRequest){
         
         UsuarioLoginResponseDTO usuarioLogado = usuarioService.logar(usuariologinRequest.getEmail(), usuariologinRequest.getSenha());
