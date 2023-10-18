@@ -81,16 +81,22 @@ public class ProdutoService {
         produto.setId(0);
 
         produto.setStatus(true);
-
+        
         CategoriaResponseDTO categoriaResponse;
+        
+        categoriaResponse = categoriaService.buscarCategoriaPorId(produto.getCategoria().getId());
+        
+        if(categoriaResponse.isStatus() == false) {
+            throw new ResourceBadRequestException("Categoria", "Categoria não esta disponivel para o produto");
+        }
+
         try {
 
             if (produto.getEstoque() < 0) {
                 throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
             }
             produto = produtoRepository.save(produto);
-
-            categoriaResponse = categoriaService.buscarCategoriaPorId(produto.getCategoria().getId());
+            
 
         } catch (Exception p) {
             throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");

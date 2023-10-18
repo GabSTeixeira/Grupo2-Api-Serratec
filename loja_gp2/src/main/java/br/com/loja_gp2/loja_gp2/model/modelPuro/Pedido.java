@@ -112,6 +112,7 @@ public class Pedido {
         this.observacao = observacao;
     } 
 
+    
     public void calcularTotais() {
         for (Item item: this.listaItens) {
             this.acrescimoTotal += item.getAcrescimo();
@@ -121,9 +122,12 @@ public class Pedido {
 
         this.acrescimoTotal += this.acrescimoPedido;
         this.descontoTotal += this.descontoPedido;
-
+                    
         this.valorTotal += this.acrescimoPedido - this.descontoPedido;
         
-        if (this.descontoTotal >= this.valorTotal) valorTotal = 0;
+        if (this.descontoTotal >= this.valorTotal){
+            descontoTotal = valorTotal;
+            valorTotal = 0;
+        } 
     }
 }
