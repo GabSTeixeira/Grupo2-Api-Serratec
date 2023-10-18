@@ -69,10 +69,9 @@ public class ProdutoController {
         @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     public ResponseEntity<ProdutoResponseDTO> putOne(@PathVariable Long id, @RequestBody ProdutoRequestDTO produto) {
-        //ProdutoResponseDTO produtoAlterado = produtoService.alterarProduto(id,produto);
+        ProdutoResponseDTO produtoAlterado = produtoService.alterarProduto(id,produto);
 
-        //return ResponseEntity.status(HttpStatus.OK).body(produtoAlterado);
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(produtoAlterado);
     }
 
     @PutMapping("/desativar/{id}")

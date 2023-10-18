@@ -16,6 +16,8 @@ import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 
 @Entity
 public class Usuario {
+    
+    //#region propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -38,9 +40,11 @@ public class Usuario {
     private List<Pedido> listaPedido;
     @OneToMany(mappedBy = "usuario")
     private transient List<Log> listaLog;
-    // transient é para as conversões objetos em json funcionar
+    // transient é para as conversões objetos em json funcionar sem entrar em loop
 
-
+    //#endregion propriedades
+    
+    //#region getters and setters
     public long getId() {
         return id;
     }
@@ -119,5 +123,6 @@ public class Usuario {
 
     public void setListaLog(List<Log> listaLog) {
         this.listaLog = listaLog;
-    } 
+    }
+    //#endregion getters and setters
 }

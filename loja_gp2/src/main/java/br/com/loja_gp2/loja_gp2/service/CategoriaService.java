@@ -4,19 +4,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
 import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
-import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
-import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Categoria;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 import br.com.loja_gp2.loja_gp2.repository.CategoriaRepository;
 
 @Service
@@ -24,6 +27,9 @@ public class CategoriaService {
     
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -47,7 +53,7 @@ public class CategoriaService {
 
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);
     }
-    @Transactional
+
     public CategoriaResponseDTO cadastrarCategoria(CategoriaRequestDTO categoriaRequest){
 
         Categoria categoria = modelMapper.map(categoriaRequest, Categoria.class);
@@ -64,7 +70,6 @@ public class CategoriaService {
         return modelMapper.map(categoria, CategoriaResponseDTO.class);
     }
 
-    @Transactional
     public CategoriaResponseDTO alterarCategoria(long id, CategoriaRequestDTO categoriaRequest) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
@@ -75,15 +80,29 @@ public class CategoriaService {
 
         Categoria alteracaoCategoria = modelMapper.map(categoriaRequest, Categoria.class);
         alteracaoCategoria.setId(id);
+        alteracaoCategoria.setStatus(categoriaEncontrada.get().isStatus());
 
         Categoria categoriaOriginal = new Categoria();
-        Categoria categoriaAlterada = categoriaEncontrada.get();
+        Categoria categoriaAlterada;
 
-        
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
+
         try {
-            categoriaAlterada = categoriaRepository.save(categoriaAlterada);
+
+            BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
+
+
+            categoriaAlterada = categoriaRepository.save(alteracaoCategoria);
+
+            logService.registrarLog(new Log(
+                Categoria.class.getSimpleName(),
+                EnumTipoAlteracaoLog.UPDATE,
+                ObjetoToJson.conversor(categoriaOriginal),
+                ObjetoToJson.conversor(categoriaAlterada),
+                usuarioDummy));
         }
-        catch (Exception e) {//
+        catch (Exception e) {
             throw new ResourceBadRequestException("categoria","Não foi possivel alterar a categoria");
         }
 
@@ -91,7 +110,6 @@ public class CategoriaService {
         
     }
     
-    @Transactional
     public void inativarCategoria(Long id) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
@@ -100,11 +118,30 @@ public class CategoriaService {
             throw new ResourceNotFoundException(id, "categoria");
         }
 
-        categoriaEncontrada.get().setStatus(false);
+        
+        Categoria categoriaOriginal = new Categoria();
+        Categoria categoriaAlterada = categoriaEncontrada.get();
+        
+        Usuario usuarioDummy = new Usuario();
+        
+        try {
+            BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
+            categoriaAlterada.setStatus(false);
+            
+            categoriaAlterada = categoriaRepository.save(categoriaAlterada);
 
-        categoriaRepository.save(categoriaEncontrada.get());
+            logService.registrarLog(new Log(
+                Categoria.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.UPDATE, 
+                ObjetoToJson.conversor(categoriaOriginal), 
+                ObjetoToJson.conversor(categoriaAlterada), 
+                usuarioDummy));
+
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
     }
-    @Transactional
+
     public void reativarCategoria(Long id) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
@@ -112,9 +149,26 @@ public class CategoriaService {
         if (categoriaEncontrada.isEmpty()) {
             throw new ResourceNotFoundException(id, "categoria");
         }
+        Categoria categoriaOriginal = new Categoria();
+        Categoria categoriaAlterada = categoriaEncontrada.get();
 
-        categoriaEncontrada.get().setStatus(true);
+        Usuario usuarioDummy = new Usuario();
+        
+        try {
+            BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
+            
+            categoriaAlterada.setStatus(true);
+            categoriaAlterada = categoriaRepository.save(categoriaAlterada);
+            
 
-        categoriaRepository.save(categoriaEncontrada.get());
+            logService.registrarLog(new Log(
+                    Categoria.class.getSimpleName(),
+                    EnumTipoAlteracaoLog.UPDATE,
+                    ObjetoToJson.conversor(categoriaOriginal),
+                    ObjetoToJson.conversor(categoriaAlterada),
+                    usuarioDummy));
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
     }
 }
