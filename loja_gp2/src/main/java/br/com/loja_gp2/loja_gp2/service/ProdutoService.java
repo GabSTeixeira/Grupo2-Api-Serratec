@@ -114,7 +114,7 @@ public class ProdutoService {
         if (produto.getEstoque() < 0) {
             throw new ResourceBadRequestException(Produto.class.getSimpleName(), "Verifique o campo estoque");
         }
-        
+        produto.setStatus(produtoEncontrado.get().isStatus());
         produto.setId(id);
         
         Usuario usuarioDummy = new Usuario();

@@ -62,9 +62,13 @@ public class ItemService {
         for (ItemRequestDTO itemReq : pedidoRequest.getListaItens()) {
             
             // verifica se não é possivel realizar a venda para aquele produto    
+            if (produtoService.buscarProdutoPorId(itemReq.getProduto().getId()).getCategoria().isStatus() == false) {
+                throw new ResourceBadRequestException("Item", "Categoria não esta disponivel para o produto com Id: "+ itemReq.getProduto().getId());
+            }
             if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto().getId())) {
                  throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
             }
+            
 
             ProdutoResponseDTO produtoAtualizado = produtoService.buscarProdutoPorId(itemReq.getProduto().getId());
             Item item = modelMapper.map(itemReq, Item.class);
