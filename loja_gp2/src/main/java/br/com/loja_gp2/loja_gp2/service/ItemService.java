@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.TransactionScoped;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
@@ -35,29 +32,20 @@ public class ItemService {
     private ModelMapper modelMapper;
 
     
+    // de fato remove do estoque de produto e cadastra na tabela de itens
     public List<ItemResponseDTO> cadastrarItensPedido (Pedido pedido) {
-        List<Item> listaItens = new ArrayList<>();
-
-        for (Item item : pedido.getListaItens()) {
-            
-            // verifica se não é possivel realizar a venda para aquele produto    
-            if (item.getQuantidade() > produtoService.verificarEstoque(item.getProduto().getId())) {
-                 throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+item.getProduto().getId());
-            }
-                     
-            // retirar do estoque de produto.  
-            ProdutoResponseDTO produtoAtualizado = produtoService.retirarEstoque(item.getProduto().getId(), item.getQuantidade());
-            
-            item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
-            item.setPedido(pedido);
-
-            listaItens.add(item);
-        }
+        List<Item> listaItens;
 
         try {
+
+            // tira do estoque e cadastra o pedido nos itens
+            pedido.getListaItens().forEach((item) -> {
+                item.setPedido(pedido);
+                produtoService.retirarEstoque(item.getProduto().getId(), item.getQuantidade());
+            });
             
-            listaItens = itemRepository.saveAll(listaItens);
-            
+            listaItens = itemRepository.saveAll(pedido.getListaItens());
+        
         } catch (Exception e) {
             throw new ResourceBadRequestException("Não foi possivel cadastrar os itens deste pedido");
         }
@@ -65,4 +53,27 @@ public class ItemService {
         return listaItens.stream().map(i -> modelMapper.map(i, ItemResponseDTO.class))
         .collect(Collectors.toList());
     }
+
+
+    // verifica se a compra é possivel e atualiza os valores de itens
+    public List<Item> atualizarListaItens (PedidoRequestDTO pedidoRequest) {
+        List<Item> listaItens = new ArrayList<>();
+
+        for (ItemRequestDTO itemReq : pedidoRequest.getListaItens()) {
+            
+            // verifica se não é possivel realizar a venda para aquele produto    
+            if (itemReq.getQuantidade() > produtoService.verificarEstoque(itemReq.getProduto().getId())) {
+                 throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
+            }
+
+            ProdutoResponseDTO produtoAtualizado = produtoService.buscarProdutoPorId(itemReq.getProduto().getId());
+            Item item = modelMapper.map(itemReq, Item.class);
+            
+            item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
+            
+            listaItens.add(item);
+        }
+
+        return listaItens;
+    } 
 }

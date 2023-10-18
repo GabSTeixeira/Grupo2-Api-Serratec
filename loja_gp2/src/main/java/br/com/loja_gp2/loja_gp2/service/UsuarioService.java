@@ -71,13 +71,6 @@ public class UsuarioService {
         try {
             usuario = usuarioRepository.save(usuario);
 
-            logService.registrarLog(new Log(
-                Usuario.class.getSimpleName(), 
-                EnumTipoAlteracaoLog.CREATE, 
-                ObjetoToJson.conversor(usuario), 
-                ObjetoToJson.conversor(usuario), 
-                usuario));
-
         } catch (Exception e) {
             throw new ResourceBadRequestException("usuario", "Não foi possivel cadastrar");
         }
@@ -98,7 +91,11 @@ public class UsuarioService {
         alteracaoUsuario.setId(id);
 
         Usuario usuarioOriginal = new Usuario();
-        Usuario usuarioAlterado = usuarioEncontrado.get(); //
+        Usuario usuarioAlterado = usuarioEncontrado.get();
+
+
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1l);
         
         try {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
@@ -111,7 +108,7 @@ public class UsuarioService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(usuarioOriginal), 
                 ObjetoToJson.conversor(usuarioAlterado),
-                usuarioAlterado));
+                usuarioDummy));
 
         } catch (Exception e) {//
             throw new ResourceBadRequestException("usuario","Não foi possivel alterar");
@@ -120,18 +117,16 @@ public class UsuarioService {
         return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);//
     }
 
-    @Transactional
     public void inativarUsuario(long id) {
         mudarStatusUsuario(id, false);
     }
 
-
-    @Transactional
     public void retivarUsuario(long id) {
         mudarStatusUsuario(id, true);
     }
 
     // vai mudar o sistema de usuario que fez a modificação provavelmente, então seria necessario mais um parametro aqui
+    @Transactional
     private void mudarStatusUsuario(long id, boolean status) {
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
@@ -139,15 +134,14 @@ public class UsuarioService {
             throw new ResourceNotFoundException(id, "usuario");
         }
 
-        Usuario usuarioAlterado = usuarioEncontrado.get();
-        
-        
         Usuario usuarioOriginal = new Usuario();
-        
+        Usuario usuarioAlterado = usuarioEncontrado.get();
+
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1l);
         
         try {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
-            
             
             usuarioAlterado.setStatus(status);
             
@@ -158,9 +152,9 @@ public class UsuarioService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(usuarioOriginal), 
                 ObjetoToJson.conversor(usuarioAlterado), 
-                usuarioAlterado));
+                usuarioDummy));
         } catch (Exception e) {
-            throw new ResourceInternalServerErrorException();
+            throw new ResourceBadRequestException();
         }
     }
 }

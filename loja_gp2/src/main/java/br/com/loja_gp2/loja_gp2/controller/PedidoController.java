@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.PedidoService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -40,9 +42,14 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<PedidoResponseDTO> postOne (@RequestBody PedidoRequestDTO pedido) {
-        PedidoResponseDTO pedidoCriado = pedidoService.cadastrarPedido(pedido);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoCriado);
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido retornados com sucesso" ),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+    })
+    public ResponseEntity<PedidoResponseDTO> postOne (@RequestBody PedidoRequestDTO pedidoRequest) {
+        PedidoResponseDTO pedidoResponse = pedidoService.cadastrarPedido(pedidoRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponse);
     }   
 }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Categoria;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
+
 import java.util.List;
 
 

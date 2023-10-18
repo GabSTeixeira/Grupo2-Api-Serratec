@@ -15,9 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPagamento;
-import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 
 @Entity
 public class Pedido {
@@ -115,19 +113,16 @@ public class Pedido {
     } 
 
     public void calcularTotais() {
-
-    
         for (Item item: this.listaItens) {
             this.acrescimoTotal += item.getAcrescimo();
             this.descontoTotal += item.getDesconto();
-
             this.valorTotal += item.getValorTotal();
         }
 
+        this.acrescimoTotal += this.acrescimoPedido;
+        this.descontoTotal += this.descontoPedido;
 
         this.valorTotal += this.acrescimoPedido - this.descontoPedido;
 
     }
-
-
 }

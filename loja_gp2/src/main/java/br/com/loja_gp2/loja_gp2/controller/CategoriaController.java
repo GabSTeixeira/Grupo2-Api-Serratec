@@ -31,7 +31,7 @@ public class CategoriaController {
     
     @GetMapping
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Categoria retornada com sucesso" ),
+        @ApiResponse(responseCode = "200", description = "Categorias retornadas com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
     })
     public ResponseEntity<List<CategoriaResponseDTO>> getAll() {

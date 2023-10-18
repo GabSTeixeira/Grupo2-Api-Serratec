@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 public class Produto {
     
+    //#region propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -30,7 +31,10 @@ public class Produto {
     private Categoria categoria;
     @Column(nullable = false)
     private boolean status;
+
+    //#endregion propriedades
     
+    //#region getters and setters
     public long getId() {
         return id;
     }
@@ -73,4 +77,5 @@ public class Produto {
     public void setStatus(boolean status) {
         this.status = status;
     }
+    //#endregion getters and setters
 }
