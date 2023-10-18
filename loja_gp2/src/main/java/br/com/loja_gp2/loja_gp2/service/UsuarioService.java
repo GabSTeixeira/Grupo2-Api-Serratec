@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Email;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,9 @@ public class UsuarioService {
     
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -74,6 +78,8 @@ public class UsuarioService {
         } catch (Exception e) {
             throw new ResourceBadRequestException("usuario", "Não foi possivel cadastrar");
         }
+
+        emailService.criarEmailCadastro(usuario);
 
         return modelMapper.map(usuario, UsuarioResponseDTO.class);
     }

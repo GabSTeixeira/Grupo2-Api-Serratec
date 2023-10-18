@@ -37,6 +37,9 @@ public class PedidoService {
     private UsuarioService usuarioService;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public List<PedidoResponseDTO> buscarTodosPedidos() {
@@ -105,6 +108,8 @@ public class PedidoService {
         } catch (Exception e) {
             throw new ResourceBadRequestException(Pedido.class.getSimpleName(), "Não foi possivel cadastrar o pedido");
         }
+
+        emailService.criarEmailPedido(usuario, pedido);
         
         PedidoResponseDTO pedidoResponse = modelMapper.map(pedido, PedidoResponseDTO.class);
         pedidoResponse.setListaItens(listaItensResponse);
