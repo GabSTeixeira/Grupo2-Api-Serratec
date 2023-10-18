@@ -88,6 +88,7 @@ public class Item {
         }   
     }
 
+    
     public void calcularValorTotal () {
         try {
 
@@ -97,8 +98,17 @@ public class Item {
             if(this.desconto < 0) this.desconto = 0;
             
             verificarDesconto();
-       
+                            
+
+            double valorNormal = this.produto.getValor() * this.quantidade;
+
+            double valorComAcrescimo = (this.produto.getValor() + this.acrescimo) * this.quantidade;
+                  
             this.valorTotal = (this.produto.getValor() + this.acrescimo - this.desconto ) * this.quantidade;
+
+            this.desconto = valorComAcrescimo - valorTotal;
+            
+            this.acrescimo = valorComAcrescimo - valorNormal;
             
 
         } catch (Exception e) {
