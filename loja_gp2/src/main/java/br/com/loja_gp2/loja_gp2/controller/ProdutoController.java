@@ -38,7 +38,15 @@ public class ProdutoController {
 
         ProdutoResponseDTO produtoEncontrado = produtoService.buscarProdutoPorId(id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(produtoEncontrado);
+        return ResponseEntity.status(HttpStatus.OK).body(produtoEncontrado);
+    }
+
+    @GetMapping("/categoria/{id}")
+    public ResponseEntity<List<ProdutoResponseDTO>> findByCategoria(@PathVariable Long id) {
+
+        List<ProdutoResponseDTO> listaProduto = produtoService.buscarProdutosPorCategoria(id);
+
+        return ResponseEntity.ok(listaProduto);
     }
 
     @PostMapping

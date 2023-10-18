@@ -7,4 +7,8 @@ public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(long id, String elemento){
         super("Não foi possivel localizar o "+elemento+" com Id: "+ id);
     }
+
+    public ResourceNotFoundException(String mensagem){
+        super(mensagem);
+    }
 }

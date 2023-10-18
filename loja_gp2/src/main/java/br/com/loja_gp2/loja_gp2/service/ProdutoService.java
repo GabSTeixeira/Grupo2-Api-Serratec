@@ -13,7 +13,9 @@ import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Categoria;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
+import br.com.loja_gp2.loja_gp2.repository.CategoriaRepository;
 import br.com.loja_gp2.loja_gp2.repository.ProdutoRepository;
 
 @Service
@@ -23,13 +25,17 @@ public class ProdutoService {
     private ProdutoRepository produtoRepository;
 
     @Autowired
+    private CategoriaRepository categoriaRepository;
+  
+    @Autowired
     private CategoriaService categoriaService;
 
     @Autowired
     private ModelMapper modelMapper;
 
+
     public List<ProdutoResponseDTO> buscarTodosProdutos() {
-        
+
         List<Produto> listaProduto = produtoRepository.findAll();
 
         List<ProdutoResponseDTO> listaProdutoResponse = listaProduto.stream()
@@ -47,6 +53,26 @@ public class ProdutoService {
 
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
    }
+
+   public List<ProdutoResponseDTO> buscarProdutosPorCategoria(Long id) {
+        Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
+        if (categoriaEncontrada.isEmpty()) {
+            throw new ResourceNotFoundException(id, "categoria");
+        }
+        
+        List<Produto> produtosEncontrados = produtoRepository.findByCategoria(categoriaEncontrada.get());
+        if (produtosEncontrados == null || produtosEncontrados.size() <= 0){
+            throw new ResourceNotFoundException("Nenhum produto encontrado para a categoria informada.");
+        }
+
+        List<ProdutoResponseDTO> listaProdutoResponse = produtosEncontrados.stream().map(p -> modelMapper.map(p, ProdutoResponseDTO.class)).collect(Collectors.toList());
+
+        return listaProdutoResponse;
+   }
+
+
+
+
 
    public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest){
 
