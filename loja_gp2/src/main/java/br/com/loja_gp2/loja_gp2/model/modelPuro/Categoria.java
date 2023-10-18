@@ -22,7 +22,7 @@ public class Categoria {
     private boolean status;
     
     @OneToMany(mappedBy = "categoria")
-    private List<Produto> listaProdutos;
+    private transient List<Produto> listaProdutos;
 
     public long getId() {
         return id;

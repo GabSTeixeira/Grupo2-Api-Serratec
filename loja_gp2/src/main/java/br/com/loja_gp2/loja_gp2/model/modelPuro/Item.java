@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 @Entity
 public class Item {
@@ -76,12 +77,22 @@ public class Item {
     }
 
     private void verificarNegativos () {
-        
+        if  (this.acrescimo < 0 || this.desconto < 0 || this.quantidade < 0) {
+            throw new ResourceBadRequestException("Acrescimo, desconto ou quantidade não podem ser negativos");
+        }  
     }
 
     public void calcularValorTotal () {
         try {
-            this.valorTotal = (this.produto.getValor() * this.quantidade) + this.acrescimo - this.desconto;
+
+            verificarNegativos();
+
+            if(this.acrescimo < 0) this.acrescimo = 0;
+            if(this.desconto < 0) this.desconto = 0;
+
+            this.valorTotal = (this.produto.getValor() + this.acrescimo - this.desconto ) * this.quantidade;
+
+
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException();
         }

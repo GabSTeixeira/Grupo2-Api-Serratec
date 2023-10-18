@@ -5,20 +5,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
 import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
+import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 import br.com.loja_gp2.loja_gp2.repository.ProdutoRepository;
 
 @Service
 public class ProdutoService {
-    
+
     @Autowired
     private ProdutoRepository produtoRepository;
 
@@ -26,29 +33,32 @@ public class ProdutoService {
     private CategoriaService categoriaService;
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public List<ProdutoResponseDTO> buscarTodosProdutos() {
-        
+
         List<Produto> listaProduto = produtoRepository.findAll();
 
         List<ProdutoResponseDTO> listaProdutoResponse = listaProduto.stream()
-        .map(p -> modelMapper.map(p, ProdutoResponseDTO.class)).collect(Collectors.toList());
-        
+                .map(p -> modelMapper.map(p, ProdutoResponseDTO.class)).collect(Collectors.toList());
+
         return listaProdutoResponse;
     }
 
-   public ProdutoResponseDTO buscarProdutoPorId(Long id) {
+    public ProdutoResponseDTO buscarProdutoPorId(Long id) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-        
-        if(produtoEncontrado.isEmpty()){
+
+        if (produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "produto");
         }
 
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
-   }
+    }
 
-   public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest){
+    public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest) {
 
         Produto produto = modelMapper.map(produtoRequest, Produto.class);
         produto.setId(0);
@@ -56,17 +66,17 @@ public class ProdutoService {
         produto.setStatus(true);
 
         CategoriaResponseDTO categoriaResponse;
-        try{
-            
-            if(produto.getEstoque() < 0) {
+        try {
+
+            if (produto.getEstoque() < 0) {
                 throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
             }
             produto = produtoRepository.save(produto);
 
             categoriaResponse = categoriaService.buscarCategoriaPorId(produto.getCategoria().getId());
-            
+
         } catch (Exception p) {
-            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto"); 
+            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
         }
 
         ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
@@ -74,54 +84,110 @@ public class ProdutoService {
         return produtoResponse;
     }
 
-   public ProdutoResponseDTO atualizarProduto(ProdutoRequestDTO produtoRequest, Long id){
-    
-    Produto produto = modelMapper.map(produtoRequest, Produto.class);
-    buscarProdutoPorId(id);
+    public ProdutoResponseDTO alterarProduto(long id, ProdutoRequestDTO produtoRequest) {
 
-    produto.setId(id);
-
-    try {
-        if(produto.getEstoque() < 0){
-            throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
-        }
-        produto = produtoRepository.save(produto);
-    } catch (Exception e) {
-        throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
-    }
-
-    return modelMapper.map(produto, ProdutoResponseDTO.class);
-    
-    }
-
-   public void inativarProduto(Long id) {
-
-    Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-
-    if(produtoEncontrado.isEmpty()) {
-        throw new ResourceNotFoundException(id, "produto");
-    }
-    produtoEncontrado.get().setStatus(false);
-
-    produtoRepository.save(produtoEncontrado.get());
-   }
-   public void reativarProduto(Long id) {
-
-    Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-
-    if (produtoEncontrado.isEmpty()) {
-        throw new ResourceNotFoundException(id, "categoria");
-    }
-
-    produtoEncontrado.get().setStatus(true);
-
-    produtoRepository.save(produtoEncontrado.get());
-    }
-
-    public long verificarEstoque(long id){
+        Produto produto = modelMapper.map(produtoRequest, Produto.class);
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+  
+        if (produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
+        }
         
-        if(produtoEncontrado.isEmpty()){
+        if (produto.getEstoque() < 0) {
+            throw new ResourceBadRequestException(Produto.class.getSimpleName(), "Verifique o campo estoque");
+        }
+        
+        produto.setId(id);
+        
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1l);
+
+        try {
+            produto = produtoRepository.save(produto);
+
+            logService.registrarLog(new Log(
+                    Produto.class.getSimpleName(),
+                    EnumTipoAlteracaoLog.UPDATE,
+                    ObjetoToJson.conversor(produtoEncontrado.get()),
+                    ObjetoToJson.conversor(produto),
+                    usuarioDummy));
+        } catch (Exception e) {
+            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
+        }
+
+        return modelMapper.map(produto, ProdutoResponseDTO.class);
+
+    }
+
+    public void inativarProduto(Long id) {
+
+        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+
+        if(produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, "categoria");
+        }
+
+        
+        Produto produtoOriginal = new Produto();
+        Produto produtoAlterado = produtoEncontrado.get();
+        
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
+        
+        try {
+            BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
+            produtoAlterado.setStatus(false);
+            
+            produtoAlterado = produtoRepository.save(produtoAlterado);
+
+            logService.registrarLog(new Log(
+                Produto.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.UPDATE, 
+                ObjetoToJson.conversor(produtoOriginal), 
+                ObjetoToJson.conversor(produtoAlterado), 
+                usuarioDummy));
+
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
+    }
+
+    public void reativarProduto(Long id) {
+
+         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+
+        if(produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, "categoria");
+        }
+
+        
+        Produto produtoOriginal = new Produto();
+        Produto produtoAlterado = produtoEncontrado.get();
+        
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
+        try {
+            BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
+            produtoAlterado.setStatus(true);
+            
+            produtoAlterado = produtoRepository.save(produtoAlterado);
+
+            logService.registrarLog(new Log(
+                Produto.class.getSimpleName(), 
+                EnumTipoAlteracaoLog.UPDATE, 
+                ObjetoToJson.conversor(produtoOriginal), 
+                ObjetoToJson.conversor(produtoAlterado), 
+                usuarioDummy));
+
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
+    }
+
+    public long verificarEstoque(long id) {
+        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+
+        if (produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "produto");
         }
 
@@ -130,23 +196,23 @@ public class ProdutoService {
 
     public ProdutoResponseDTO retirarEstoque(long id, long quantidade) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-        
-        if(produtoEncontrado.isEmpty()){
+
+        if (produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "produto");
         }
 
-        if(quantidade > produtoEncontrado.get().getEstoque()) {
+        if (quantidade > produtoEncontrado.get().getEstoque()) {
             throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
         }
 
         Produto produto = produtoEncontrado.get();
-        produto.setEstoque(produto.getEstoque()-quantidade);
+        produto.setEstoque(produto.getEstoque() - quantidade);
 
-        try{
+        try {
             produto = produtoRepository.save(produto);
 
-        } catch(Exception e) {
-
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
         }
 
         return modelMapper.map(produto, ProdutoResponseDTO.class);

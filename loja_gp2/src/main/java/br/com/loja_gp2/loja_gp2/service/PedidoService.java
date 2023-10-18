@@ -2,16 +2,13 @@ package br.com.loja_gp2.loja_gp2.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.catalina.connector.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
@@ -36,9 +33,6 @@ public class PedidoService {
     private UsuarioService usuarioService;
 
     @Autowired
-    private LogService logService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
 
@@ -47,15 +41,22 @@ public class PedidoService {
 
         // define o id como zero
         pedidoRequest.setId(0);
+
         
-        //converte o pedido request pra pedido normal
+        pedidoRequest.getListaItens().forEach((item) -> {
+            if(item.getQuantidade() <= 0) {
+                throw new ResourceBadRequestException("Por favor não insira itens com quantidade menor ou igual a zero");
+            }
+        });
+        
+        // converte o pedido request pra pedido normal
         Pedido pedido = modelMapper.map(pedidoRequest, Pedido.class);
         
         // busca o usuario para inserir no pedido
         UsuarioResponseDTO usuarioEncontradoResponse = usuarioService.buscarUsuarioPorId(pedido.getUsuario().getId());
         Usuario usuario = modelMapper.map(usuarioEncontradoResponse, Usuario.class);
         
-        //define as coisas do pedido
+        // define as informações do pedido
         pedido.setUsuario(usuario);
         pedido.setDataPedido(new Date());
         
@@ -63,13 +64,10 @@ public class PedidoService {
         
         try {  
             
-            
             // calcula todas as informações individuais dos itens
-            List<Item> itensParaCalculo = pedidoRequest.getListaItens().stream()
-            .map(i -> modelMapper.map(i, Item.class)).collect(Collectors.toList());
+            List<Item> itensParaCalculo = itemService.atualizarListaItens(pedidoRequest);
             
-            // verifica se não tem nada negativo ou nulo na lista de itens
-            
+            // verifica se não tem nada negativo e calcula os totais individuais dos itens
             itensParaCalculo.forEach(i -> i.calcularValorTotal());
             
             // define a lista atualizada e depois calcula as informações do pedido
