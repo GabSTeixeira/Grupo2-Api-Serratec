@@ -45,8 +45,9 @@ public class EmailService {
     }
     @GetMapping("/email")
     public void criarEmail(List<String>destinatarios, String mensagem, String assunto, String dados){
-
-        //String mensagem = "
+        //email de confirmacao
+        //String mensagem = 
+        
         Email email = new Email(assunto, mensagem, dados+"@lojaGp2.com", destinatarios);
 
         enviar(email);

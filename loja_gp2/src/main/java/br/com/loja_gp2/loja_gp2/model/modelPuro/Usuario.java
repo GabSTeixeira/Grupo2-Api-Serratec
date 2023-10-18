@@ -11,11 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
+import org.springframework.security.core.userdetails.UserDetails;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
     
     //#region propriedades
     @Id
@@ -125,4 +125,6 @@ public class Usuario {
         this.listaLog = listaLog;
     }
     //#endregion getters and setters
+
+    
 }
