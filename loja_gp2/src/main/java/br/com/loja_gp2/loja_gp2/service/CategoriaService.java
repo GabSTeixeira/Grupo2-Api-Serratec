@@ -123,6 +123,7 @@ public class CategoriaService {
         Categoria categoriaAlterada = categoriaEncontrada.get();
         
         Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
         
         try {
             BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
@@ -153,6 +154,7 @@ public class CategoriaService {
         Categoria categoriaAlterada = categoriaEncontrada.get();
 
         Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
         
         try {
             BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);

@@ -82,7 +82,7 @@ public class UsuarioController {
     public ResponseEntity<?> inativeOne(@PathVariable long id) {
         usuarioService.inativarUsuario(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
     @PutMapping("/ativar/{id}")
@@ -94,6 +94,6 @@ public class UsuarioController {
     public ResponseEntity<?> activeOne(@PathVariable long id) {
         usuarioService.retivarUsuario(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

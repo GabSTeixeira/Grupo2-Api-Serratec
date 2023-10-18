@@ -68,7 +68,7 @@ public class ProdutoService {
         
         Categoria categoria = modelMapper.map(categoriaEncontrada, Categoria.class);
            
-        List<Produto> produtosEncontrados = produtoRepository.findByCategoria(categoria);
+        List<Produto> produtosEncontrados = produtoRepository.findAllByCategoria(categoria);
         
         if (produtosEncontrados == null || produtosEncontrados.size() <= 0){
             throw new ResourceNotFoundException("Nenhum produto encontrado para a categoria informada.");

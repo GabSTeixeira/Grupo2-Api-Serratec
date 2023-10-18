@@ -91,7 +91,7 @@ public class ProdutoController {
     public ResponseEntity<?> inativeOne(@PathVariable Long id){
         produtoService.inativarProduto(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
      @PutMapping("/ativar/{id}")
@@ -103,6 +103,6 @@ public class ProdutoController {
     public ResponseEntity<?> activateOne(@PathVariable Long id){
         produtoService.reativarProduto(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

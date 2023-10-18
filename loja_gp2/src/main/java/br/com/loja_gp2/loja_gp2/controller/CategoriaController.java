@@ -87,7 +87,7 @@ public class CategoriaController {
     public ResponseEntity<?> inativeOne(@PathVariable Long id){
         categoriaService.inativarCategoria(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/ativar/{id}")
@@ -99,6 +99,6 @@ public class CategoriaController {
     public ResponseEntity<?> activateOne(@PathVariable Long id){
         categoriaService.reativarCategoria(id);
         
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
