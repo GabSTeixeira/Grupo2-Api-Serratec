@@ -1,5 +1,6 @@
 package br.com.loja_gp2.loja_gp2.service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +12,15 @@ import javax.validation.constraints.Email;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
+import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioLoginResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
@@ -23,9 +30,11 @@ import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 import br.com.loja_gp2.loja_gp2.repository.UsuarioRepository;
+import br.com.loja_gp2.loja_gp2.security.JWTService;
 
 @Service
 public class UsuarioService {
+    private static final String BEARER = "Bearer ";
     
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -38,6 +47,15 @@ public class UsuarioService {
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JWTService jwtService;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     public List<UsuarioResponseDTO> buscarTodosUsuario() {
@@ -162,5 +180,28 @@ public class UsuarioService {
         } catch (Exception e) {
             throw new ResourceBadRequestException();
         }
+    }
+    public UsuarioResponseDTO obterPorEmail(String email){
+        Optional<Usuario> optUsuario =  usuarioRepository.findByEmail(email);
+
+        return modelMapper.map(optUsuario.get(),UsuarioResponseDTO.class);
+    }
+
+    public UsuarioLoginResponseDTO logar(String email, String senha){
+        // Aqui que a autenticação acontece dentro do spring automagicamente.
+        Authentication autenticacao = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(email, senha,Collections.emptyList()));
+            
+        // Aqui eu passo a nova autenticação para o springSecurity cuidar pra mim.
+        SecurityContextHolder.getContext().setAuthentication(autenticacao);
+
+        // Crio o token JWT
+        String token =  BEARER + jwtService.gerarToken(autenticacao);
+    
+        // Pego o usuario dono do token
+        UsuarioResponseDTO usuarioResponse = obterPorEmail(email);
+
+        // Crio e devolvo o DTO esperado.
+        return new UsuarioLoginResponseDTO(token, usuarioResponse);
     }
 }
