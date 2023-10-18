@@ -190,6 +190,12 @@ public class UsuarioService {
         return modelMapper.map(optUsuario.get(),UsuarioResponseDTO.class);
     }
 
+    /**
+     * 
+     * @param email
+     * @param senha
+     * @return
+     */
     public UsuarioLoginResponseDTO logar(String email, String senha){
         // Aqui que a autenticação acontece dentro do spring automagicamente.
         Authentication autenticacao = authenticationManager

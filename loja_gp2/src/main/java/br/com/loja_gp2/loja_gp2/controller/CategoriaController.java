@@ -18,7 +18,7 @@ import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.CategoriaService;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -30,6 +30,10 @@ public class CategoriaController {
     private CategoriaService categoriaService;
     
     @GetMapping
+     @Operation(
+        summary = "Retorna todas as categorias",
+        description = "Esta requisição obtem todas as categorias"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categorias retornadas com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
@@ -42,6 +46,10 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+        summary = "Obtem por id",
+        description = "Esta requisição obtem a categoria por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado")
@@ -55,6 +63,10 @@ public class CategoriaController {
     
 
     @PostMapping
+    @Operation(
+        summary = "Adicionar",
+        description = "Esta requisição adiciona uma categoria"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Categoria Criada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -66,6 +78,10 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+        summary = "Atualizar por id",
+        description = "Esta requisição atualiza a categoria por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -78,6 +94,10 @@ public class CategoriaController {
     }
 
     @PutMapping("/desativar/{id}")
+    @Operation(
+        summary = "Desativa por id",
+        description = "Esta requisição desativa a categoria por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
@@ -91,6 +111,10 @@ public class CategoriaController {
     }
 
     @PutMapping("/ativar/{id}")
+    @Operation(
+        summary = "Ativa por id",
+        description = "Esta requisição ativa a categoria por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),

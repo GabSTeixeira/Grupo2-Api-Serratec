@@ -19,6 +19,7 @@ import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioLoginResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -31,6 +32,11 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
+    @Operation(
+        summary = "Retorna todos os usuarios",
+        description = "Esta requisição obtem todos os usuários"
+    )
+
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuarios retornados com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
@@ -43,6 +49,10 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+        summary = "Obtem por id",
+        description = "Esta requisição obtem o usuário por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
@@ -54,7 +64,12 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioEncontrado);
     }
     
+
     @PostMapping("/cadastrar")
+    @Operation(
+        summary = "Adicionar",
+        description = "Esta requisição adiciona um usuário"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Usuario Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -66,6 +81,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+        summary = "Atualizar por id",
+        description = "Esta requisição atualiza o usuário por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
@@ -78,6 +97,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/desativar/{id}")
+    @Operation(
+        summary = "Desativa por id",
+        description = "Esta requisição desativa o usuários por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
@@ -90,6 +113,10 @@ public class UsuarioController {
     }
     
     @PutMapping("/ativar/{id}")
+    @Operation(
+        summary = "Ativa por id",
+        description = "Esta requisição ativa o usuário por id"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
