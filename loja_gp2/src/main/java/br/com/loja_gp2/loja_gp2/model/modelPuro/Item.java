@@ -83,8 +83,8 @@ public class Item {
     }
 
     private void verificarDesconto() {
-        if(this.desconto >= this.valorTotal) {
-            this.desconto = this.produto.getValor();
+        if(this.desconto >= (this.produto.getValor() + this.acrescimo)) {
+            this.desconto = this.produto.getValor() + this.acrescimo;
         }   
     }
 
@@ -92,13 +92,14 @@ public class Item {
         try {
 
             verificarNegativos();
-            verificarDesconto();
-
+            
             if(this.acrescimo < 0) this.acrescimo = 0;
             if(this.desconto < 0) this.desconto = 0;
-
+            
+            verificarDesconto();
+       
             this.valorTotal = (this.produto.getValor() + this.acrescimo - this.desconto ) * this.quantidade;
-
+            
 
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException();

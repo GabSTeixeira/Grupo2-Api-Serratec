@@ -1,5 +1,7 @@
 package br.com.loja_gp2.loja_gp2.service;
 
+import javax.transaction.TransactionScoped;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +15,7 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    
-    public void registrarLog (Log log) {
-        
-        try {
-            logRepository.save(log);
-        } catch(Exception e) {
-            throw new ResourceInternalServerErrorException();
-        }
+    public void registrarLog (Log log) throws ResourceInternalServerErrorException {
+        logRepository.save(log);
     }
 }
