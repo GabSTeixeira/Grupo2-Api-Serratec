@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 public class PedidoRequestDTO extends PedidoBaseDTO {
+    
     private UsuarioRequestDTO usuario;
     private List<ItemRequestDTO> listaItens;
  

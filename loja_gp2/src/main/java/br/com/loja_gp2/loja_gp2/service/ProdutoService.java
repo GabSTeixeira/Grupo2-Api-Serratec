@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +105,7 @@ public class ProdutoService {
         return produtoResponse;
     }
 
+    @Transactional
     public ProdutoResponseDTO alterarProduto(long id, ProdutoRequestDTO produtoRequest) {
 
         Produto produto = modelMapper.map(produtoRequest, Produto.class);
@@ -138,6 +141,7 @@ public class ProdutoService {
 
     }
 
+    @Transactional
     public void inativarProduto(Long id) {
 
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
@@ -156,14 +160,14 @@ public class ProdutoService {
         try {
             BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
             produtoAlterado.setStatus(false);
-            
+
             produtoAlterado = produtoRepository.save(produtoAlterado);
 
             logService.registrarLog(new Log(
                 Produto.class.getSimpleName(), 
                 EnumTipoAlteracaoLog.UPDATE, 
-                ObjetoToJson.conversor(produtoOriginal), 
-                ObjetoToJson.conversor(produtoAlterado), 
+                ObjetoToJson.conversor(produtoOriginal),
+                ObjetoToJson.conversor(produtoAlterado),
                 usuarioDummy));
 
         } catch (Exception e) {
@@ -171,6 +175,7 @@ public class ProdutoService {
         }
     }
 
+    @Transactional
     public void reativarProduto(Long id) {
 
          Optional<Produto> produtoEncontrado = produtoRepository.findById(id);

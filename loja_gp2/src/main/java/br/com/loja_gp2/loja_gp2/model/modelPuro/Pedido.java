@@ -123,6 +123,7 @@ public class Pedido {
         this.descontoTotal += this.descontoPedido;
 
         this.valorTotal += this.acrescimoPedido - this.descontoPedido;
-
+        
+        if (this.descontoTotal >= this.valorTotal) valorTotal = 0;
     }
 }

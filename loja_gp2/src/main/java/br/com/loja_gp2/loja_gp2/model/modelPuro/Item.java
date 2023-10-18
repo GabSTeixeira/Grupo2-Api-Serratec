@@ -82,10 +82,17 @@ public class Item {
         }  
     }
 
+    private void verificarDesconto() {
+        if(this.desconto >= this.valorTotal) {
+            this.desconto = this.produto.getValor();
+        }   
+    }
+
     public void calcularValorTotal () {
         try {
 
             verificarNegativos();
+            verificarDesconto();
 
             if(this.acrescimo < 0) this.acrescimo = 0;
             if(this.desconto < 0) this.desconto = 0;

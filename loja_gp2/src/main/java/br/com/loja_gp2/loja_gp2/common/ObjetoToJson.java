@@ -6,6 +6,13 @@ public class ObjetoToJson {
     
     private static Gson gson = new Gson();
 
+    /**
+     * converte qualquer objeto para o tipo string em formato json
+     * 
+     * 
+     * @param obj
+     * @return json string
+     */
     public static String conversor (Object obj) {
         return gson.toJson(obj);
     }
