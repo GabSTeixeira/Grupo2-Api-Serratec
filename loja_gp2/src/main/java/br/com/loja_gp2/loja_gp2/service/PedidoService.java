@@ -11,13 +11,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Pedido;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 import br.com.loja_gp2.loja_gp2.repository.PedidoRepository;
