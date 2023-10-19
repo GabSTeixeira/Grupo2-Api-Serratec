@@ -39,7 +39,9 @@ public class UsuarioController {
 
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuarios retornados com sucesso" ),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<List<UsuarioResponseDTO>> getAll() {
 
@@ -55,7 +57,11 @@ public class UsuarioController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+        @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+
     })
     public ResponseEntity<UsuarioResponseDTO> getOneById(@PathVariable long id) {
         
@@ -73,6 +79,8 @@ public class UsuarioController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Usuario Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<UsuarioResponseDTO> postOne(@RequestBody UsuarioRequestDTO usuario) {
         UsuarioResponseDTO usuarioCriado = usuarioService.cadastrarUsuario(usuario);
@@ -88,7 +96,11 @@ public class UsuarioController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
-        @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+        @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+
     })
     public ResponseEntity<UsuarioResponseDTO> putOne(@PathVariable long id, @RequestBody UsuarioRequestDTO usuario) {
         UsuarioResponseDTO usuarioAlterado = usuarioService.alterarUsuario(id, usuario);
@@ -104,7 +116,9 @@ public class UsuarioController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<?> inativeOne(@PathVariable long id) {
         usuarioService.inativarUsuario(id);
@@ -120,7 +134,9 @@ public class UsuarioController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<?> activeOne(@PathVariable long id) {
         usuarioService.retivarUsuario(id);

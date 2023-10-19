@@ -34,7 +34,8 @@ public class CategoriaController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categorias retornadas com sucesso" ),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado")
     })
     public ResponseEntity<List<CategoriaResponseDTO>> getAll() {
 
@@ -50,7 +51,10 @@ public class CategoriaController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Categoria não encontrado")
+        @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<CategoriaResponseDTO> getById(@PathVariable Long id) {
 
@@ -68,6 +72,10 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Categoria Criada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+
     })
     public ResponseEntity<CategoriaResponseDTO> postOne(@RequestBody CategoriaResponseDTO categoria) {
         CategoriaResponseDTO categoriaCriada = categoriaService.cadastrarCategoria(categoria);
@@ -83,7 +91,10 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
-        @ApiResponse(responseCode = "404", description = "Categoria não encontrado")
+        @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<CategoriaResponseDTO> putOne(@PathVariable long id, @RequestBody CategoriaRequestDTO categoria) {
        CategoriaResponseDTO categoriaAlterada = categoriaService.alterarCategoria(id, categoria);
@@ -99,7 +110,9 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     
     public ResponseEntity<?> inativeOne(@PathVariable Long id){
@@ -116,7 +129,9 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<?> activateOne(@PathVariable Long id){
         categoriaService.reativarCategoria(id);

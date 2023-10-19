@@ -34,6 +34,9 @@ public class PedidoController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Pedido Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<List<PedidoResponseDTO>> getAll() {
 
@@ -49,7 +52,10 @@ public class PedidoController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<PedidoResponseDTO> getById(@PathVariable Long id) {
 
@@ -65,7 +71,10 @@ public class PedidoController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido retornados com sucesso" ),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<PedidoResponseDTO> postOne (@RequestBody PedidoRequestDTO pedidoRequest) {
         PedidoResponseDTO pedidoResponse = pedidoService.cadastrarPedido(pedidoRequest);

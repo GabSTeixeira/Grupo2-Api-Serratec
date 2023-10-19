@@ -35,7 +35,10 @@ public class ProdutoController {
     )
      @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produtos retornados com sucesso" ),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<List<ProdutoResponseDTO>> getAll() {
 
@@ -51,7 +54,10 @@ public class ProdutoController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+
     })
     public ResponseEntity<ProdutoResponseDTO> getById(@PathVariable Long id) {
 
@@ -80,6 +86,9 @@ public class ProdutoController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Produto Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<ProdutoResponseDTO> postOne(@RequestBody ProdutoRequestDTO produto) {
         ProdutoResponseDTO produtoCriado = produtoService.cadastrarProduto(produto);
@@ -95,7 +104,11 @@ public class ProdutoController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto alterado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
-        @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+
     })
     public ResponseEntity<ProdutoResponseDTO> putOne(@PathVariable Long id, @RequestBody ProdutoRequestDTO produto) {
         ProdutoResponseDTO produtoAlterado = produtoService.alterarProduto(id,produto);
@@ -111,7 +124,9 @@ public class ProdutoController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<?> inativeOne(@PathVariable Long id){
         produtoService.inativarProduto(id);
@@ -127,7 +142,9 @@ public class ProdutoController {
      @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<?> activateOne(@PathVariable Long id){
         produtoService.reativarProduto(id);
