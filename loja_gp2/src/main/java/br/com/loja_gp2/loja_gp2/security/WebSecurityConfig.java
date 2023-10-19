@@ -68,18 +68,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .authorizeRequests()
-
             /**
              * Daqui pra baixo é onde vamos futucar e fazer nossas validações dinamicas.
              * Aqui vamos informar as rotas que vão ou não precisar de autenticação e ou autorização.
              */
+            .authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/usuario/cadastrar", "/api/usuario/login")
             .permitAll()// informo que todos podem acessar esses endpoints sem autenticação.
+            .and()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/api/categoria", "/api/produto", "/api/produto/categoria/{id}", "/api/produto/{id}", "/api/categoria/{id}")
+            .permitAll()
             .anyRequest()
             // .permitAll();
             .authenticated(); // Digo que qualquer outro endpoint não maapeado acima deve cobrar autenticação.
-
 
             http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
