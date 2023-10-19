@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity // Aqui informo que é uma classe se configuração de segurança do springSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
@@ -60,8 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Parte padrão das condifuracoes, por enquanto ignorar.
         http
             .cors().and().csrf().disable()
-            //  .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(401))
-            .exceptionHandling()
+            
+            .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
