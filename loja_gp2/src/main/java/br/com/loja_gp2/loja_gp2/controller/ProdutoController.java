@@ -77,7 +77,17 @@ public class ProdutoController {
         return ResponseEntity.ok(listaProduto);
     }
 
-    @GetMapping("/ativos")  
+    @GetMapping("/ativos") 
+    @Operation(
+        summary = "Retorna todos os ativos",
+        description = "Esta requisição busca todos produtos ativos"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produtos ativos encontrados com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    }) 
     public ResponseEntity<List<ProdutoResponseDTO>> getAllActive() {
 
         List<ProdutoResponseDTO> listaProdutosAtivos = produtoService.buscarTodasProdutosAtivos();
@@ -87,6 +97,16 @@ public class ProdutoController {
 
 
     @GetMapping("/inativas")  
+    @Operation(
+        summary = "Retorna todos os inativos",
+        description = "Esta requisição busca todos produtos inativos"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Produtos inativos encontrados com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
     public ResponseEntity<List<ProdutoResponseDTO>> getAllInactive() {
 
         List<ProdutoResponseDTO> listaProdutosInativos = produtoService.buscarTodasProdutosInativos();

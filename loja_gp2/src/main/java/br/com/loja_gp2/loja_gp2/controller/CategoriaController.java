@@ -64,6 +64,16 @@ public class CategoriaController {
     }
     
     @GetMapping("/ativas")  
+    @Operation(
+        summary = "Retorna todas as ativas",
+        description = "Esta requisição busca todas as categorias ativas"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Categorias ativas encontradas com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
     public ResponseEntity<List<CategoriaResponseDTO>> getAllActive() {
 
         List<CategoriaResponseDTO> listaCategoriasAtivas = categoriaService.buscarTodasCategoriasAtivas();
@@ -72,6 +82,16 @@ public class CategoriaController {
     }
 
     @GetMapping("/inativas")  
+    @Operation(
+        summary = "Retorna todas as inativas",
+        description = "Esta requisição busca todas as categorias inativas"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Categorias inativas encontradas com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
     public ResponseEntity<List<CategoriaResponseDTO>> getAllInactive() {
 
         List<CategoriaResponseDTO> listaCategoriasInativas = categoriaService.buscarTodasCategoriasInativas();

@@ -70,6 +70,41 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioEncontrado);
     }
     
+    @GetMapping ("/ativos")
+    @Operation(
+        summary = "Retorna todos os ativos",
+        description = "Esta requisição busca todos usuários ativos"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuarios ativos encontrados com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
+    public ResponseEntity<List<UsuarioResponseDTO>> getAllActive(){
+
+        List<UsuarioResponseDTO> listaUsuario = usuarioService.buscarTodosUsuariosAtivos();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaUsuario);
+    }
+    
+    @GetMapping ("/inativos")
+    @Operation(
+        summary = "Retorna todos os inativos",
+        description = "Esta requisição busca todos usuários inativos"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuarios inativos encontrados com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
+    public ResponseEntity<List<UsuarioResponseDTO>> getAllInactive(){
+
+        List<UsuarioResponseDTO> listaUsuario = usuarioService.buscarTodosUsuariosInativos();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaUsuario);
+    }
 
     @PostMapping("/cadastrar")
     @Operation(

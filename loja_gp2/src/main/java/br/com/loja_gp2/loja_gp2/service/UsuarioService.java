@@ -79,6 +79,26 @@ public class UsuarioService {
         return modelMapper.map(usuarioEncontrado.get(), UsuarioResponseDTO.class);
     }
 
+    public List<UsuarioResponseDTO> buscarTodosUsuariosAtivos(){
+
+        List<Usuario> listaUsuariosAtivos = usuarioRepository.findAllByStatus(true);
+
+        List<UsuarioResponseDTO> listaUsuarioResponse = listaUsuariosAtivos.stream()
+        .map(u -> modelMapper.map(u, UsuarioResponseDTO.class)).collect(Collectors.toList());
+
+        return listaUsuarioResponse;
+    }
+
+    public List<UsuarioResponseDTO> buscarTodosUsuariosInativos(){
+
+        List<Usuario> listaUsuariosInativos = usuarioRepository.findAllByStatus(false);
+
+        List<UsuarioResponseDTO> listaUsuarioResponse = listaUsuariosInativos.stream()
+        .map(u -> modelMapper.map(u, UsuarioResponseDTO.class)).collect(Collectors.toList());
+        
+        return listaUsuarioResponse;
+    }
+
     @Transactional
     public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO usuarioRequest) {
 
