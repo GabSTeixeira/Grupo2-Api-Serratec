@@ -8,11 +8,12 @@ public abstract class PedidoBaseDTO {
     private long id;
     private Date dataPedido;
     private EnumTipoPagamento formaPagamento;
-    private double descontoTotal;
-    private double acrescimoTotal;
+    private double descontoItens;
+    private double acrescimoItens;
     private double acrescimoPedido;
     private double descontoPedido;
-    private double valorTotal;
+    private double valorBruto;
+    private double valorLiquido;
     private String observacao;
     
     public long getId() {
@@ -33,19 +34,18 @@ public abstract class PedidoBaseDTO {
     public void setFormaPagamento(EnumTipoPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
-    public double getDescontoTotal() {
-        return descontoTotal;
+    public double getDescontoItens() {
+        return descontoItens;
     }
-    public void setDescontoTotal(double descontoTotal) {
-        this.descontoTotal = descontoTotal;
+    public void setDescontoItens(double descontoItens) {
+        this.descontoItens = descontoItens;
     }
-    public double getAcrescimoTotal() {
-        return acrescimoTotal;
+    public double getAcrescimoItens() {
+        return acrescimoItens;
     }
-    public void setAcrescimoTotal(double acrescimoTotal) {
-        this.acrescimoTotal = acrescimoTotal;
+    public void setAcrescimoItens(double acrescimoItens) {
+        this.acrescimoItens = acrescimoItens;
     }
-
     public double getAcrescimoPedido() {
         return acrescimoPedido;
     }
@@ -62,18 +62,27 @@ public abstract class PedidoBaseDTO {
         this.descontoPedido = descontoPedido;
     }
 
-    public double getValorTotal() {
-        return valorTotal;
+    public double getValorBruto() {
+        return valorBruto;
     }
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
+
+    public void setValorBruto(double valorBruto) {
+        this.valorBruto = valorBruto;
     }
+
+    public double getValorLiquido() {
+        return valorLiquido;
+    }
+
+    public void setValorLiquido(double valorLiquido) {
+        this.valorLiquido = valorLiquido;
+    }
+
     public String getObservacao() {
         return observacao;
     }
+
     public void setObservacao(String observacao) {
         this.observacao = observacao;
     }
-
-    
 }

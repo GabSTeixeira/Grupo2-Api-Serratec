@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
-import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
@@ -35,6 +34,9 @@ public class PedidoService {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -105,6 +107,8 @@ public class PedidoService {
         } catch (Exception e) {
             throw new ResourceBadRequestException(Pedido.class.getSimpleName(), "Não foi possivel cadastrar o pedido");
         }
+
+        emailService.criarEmailPedido(usuario, pedido);
         
         PedidoResponseDTO pedidoResponse = modelMapper.map(pedido, PedidoResponseDTO.class);
         pedidoResponse.setListaItens(listaItensResponse);

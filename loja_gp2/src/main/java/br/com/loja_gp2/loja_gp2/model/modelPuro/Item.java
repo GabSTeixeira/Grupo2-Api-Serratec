@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
-import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 @Entity
 public class Item {
 
@@ -34,7 +33,9 @@ public class Item {
     @Column(nullable = false)
     private double acrescimo;
     @Column(nullable = false)
-    private double valorTotal;
+    private double valorBruto;
+    @Column(nullable = false)
+    private double valorLiquido;
     
     public long getId() {
         return id;
@@ -72,8 +73,17 @@ public class Item {
     public void setAcrescimo(double acrescimo) {
         this.acrescimo = acrescimo;
     }
-    public double getValorTotal() {
-        return valorTotal;
+    public double getValorBruto() {
+        return valorBruto;
+    }
+    public void setValorBruto(double valorBruto) {
+        this.valorBruto = valorBruto;
+    }
+    public double getValorLiquido() {
+        return valorLiquido;
+    }
+    public void setValorLiquido (double valorLiquido) {
+        this.valorLiquido = valorLiquido;
     }
 
     private void verificarNegativos () {
@@ -83,26 +93,25 @@ public class Item {
     }
 
     private void verificarDesconto() {
-        if(this.desconto >= (this.produto.getValor() + this.acrescimo)) {
+        if (this.acrescimo < 0) {
+            this.acrescimo = 0;
+        }else if (this.desconto < 0) {
+            this.desconto = 0;
+        } if (this.desconto >= (this.produto.getValor() + this.acrescimo)) {
             this.desconto = this.produto.getValor() + this.acrescimo;
-        }   
+        }
     }
 
     public void calcularValorTotal () {
-        try {
 
             verificarNegativos();
-            
-            if(this.acrescimo < 0) this.acrescimo = 0;
-            if(this.desconto < 0) this.desconto = 0;
-            
             verificarDesconto();
-       
-            this.valorTotal = (this.produto.getValor() + this.acrescimo - this.desconto ) * this.quantidade;
             
+            this.valorBruto = this.produto.getValor() * this.quantidade;
+            
+            this.desconto = valorBruto - ((this.produto.getValor() - this.desconto) * this.quantidade);
+            this.acrescimo = ((this.produto.getValor() + this.acrescimo) * this.quantidade) - valorBruto;
 
-        } catch (Exception e) {
-            throw new ResourceInternalServerErrorException();
-        }
+            this.valorLiquido = this.valorBruto + this.acrescimo - this.desconto;
     }
 }

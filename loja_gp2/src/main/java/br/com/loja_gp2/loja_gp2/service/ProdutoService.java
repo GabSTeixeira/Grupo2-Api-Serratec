@@ -89,18 +89,27 @@ public class ProdutoService {
         if(categoriaResponse.isStatus() == false) {
             throw new ResourceBadRequestException("Categoria", "Categoria não esta disponivel para o produto");
         }
+        
+        if (produto.getEstoque() < 0) {
+            throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+        }
+
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
 
         try {
-
-            if (produto.getEstoque() < 0) {
-                throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
-            }
-            produto = produtoRepository.save(produto);
-            
+            produto = produtoRepository.save(produto);    
 
         } catch (Exception p) {
             throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
         }
+
+        logService.registrarLog(new Log(
+                    Produto.class.getSimpleName(),
+                    EnumTipoAlteracaoLog.UPDATE,
+                    ObjetoToJson.conversor(produto),
+                    ObjetoToJson.conversor(produto),
+                    usuarioDummy));
 
         ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
         produtoResponse.setCategoria(categoriaResponse);
@@ -129,15 +138,16 @@ public class ProdutoService {
         try {
             produto = produtoRepository.save(produto);
 
-            logService.registrarLog(new Log(
+        } catch (Exception e) {
+            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
+        }
+
+        logService.registrarLog(new Log(
                     Produto.class.getSimpleName(),
                     EnumTipoAlteracaoLog.UPDATE,
                     ObjetoToJson.conversor(produtoEncontrado.get()),
                     ObjetoToJson.conversor(produto),
                     usuarioDummy));
-        } catch (Exception e) {
-            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
-        }
 
         return modelMapper.map(produto, ProdutoResponseDTO.class);
 
@@ -164,17 +174,16 @@ public class ProdutoService {
             produtoAlterado.setStatus(false);
 
             produtoAlterado = produtoRepository.save(produtoAlterado);
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
 
-            logService.registrarLog(new Log(
+        logService.registrarLog(new Log(
                 Produto.class.getSimpleName(), 
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal),
                 ObjetoToJson.conversor(produtoAlterado),
                 usuarioDummy));
-
-        } catch (Exception e) {
-            throw new ResourceInternalServerErrorException();
-        }
     }
 
     @Transactional
@@ -185,7 +194,6 @@ public class ProdutoService {
         if(produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "categoria");
         }
-
         
         Produto produtoOriginal = new Produto();
         Produto produtoAlterado = produtoEncontrado.get();
@@ -197,17 +205,16 @@ public class ProdutoService {
             produtoAlterado.setStatus(true);
             
             produtoAlterado = produtoRepository.save(produtoAlterado);
-
-            logService.registrarLog(new Log(
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException();
+        }
+        
+        logService.registrarLog(new Log(
                 Produto.class.getSimpleName(), 
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal), 
                 ObjetoToJson.conversor(produtoAlterado), 
                 usuarioDummy));
-
-        } catch (Exception e) {
-            throw new ResourceInternalServerErrorException();
-        }
     }
 
     public long verificarEstoque(long id) {
@@ -236,10 +243,11 @@ public class ProdutoService {
 
         try {
             produto = produtoRepository.save(produto);
-
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException();
         }
+
+
 
         return modelMapper.map(produto, ProdutoResponseDTO.class);
     }

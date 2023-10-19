@@ -7,4 +7,7 @@ public class ResourceInternalServerErrorException extends RuntimeException {
     public ResourceInternalServerErrorException(){
         super("Um problema ocorreu durante a execução, verifique o input e tente novamente");
     }
+    public ResourceInternalServerErrorException(String mensagem){
+        super(mensagem);
+    }
 }

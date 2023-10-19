@@ -38,11 +38,13 @@ public class Pedido {
     @Column(nullable = false)
     private double acrescimoPedido;
     @Column(nullable = false)
-    private double descontoTotal;
+    private double descontoItens;
     @Column(nullable = false)
-    private double acrescimoTotal;
+    private double acrescimoItens;
     @Column(nullable = false)
-    private double valorTotal;
+    private double valorBruto;
+    @Column(nullable = false)
+    private double valorLiquido;
     private String observacao;
     
     public long getId() {
@@ -87,23 +89,29 @@ public class Pedido {
     public void setAcrescimoPedido(double acrescimoPedido) {
         this.acrescimoPedido = acrescimoPedido;
     }
-    public double getDescontoTotal() {
-        return descontoTotal;
+    public double getDescontoItens() {
+        return descontoItens;
     }
-    public void setDescontoTotal(double descontoTotal) {
-        this.descontoTotal = descontoTotal;
+    public void setDescontoItens(double descontoItens) {
+        this.descontoItens = descontoItens;
     }
-    public double getAcrescimoTotal() {
-        return acrescimoTotal;
+    public double getAcrescimoItens() {
+        return acrescimoItens;
     }
-    public void setAcrescimoTotal(double acrescimoTotal) {
-        this.acrescimoTotal = acrescimoTotal;
+    public void setAcrescimoItens(double acrescimoItens) {
+        this.acrescimoItens = acrescimoItens;
     }
-    public double getValorTotal() {
-        return valorTotal;
+    public double getValorBruto() {
+        return valorBruto;
     }
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setValorBruto(double valorBruto) {
+        this.valorBruto = valorBruto;
+    }
+    public double getValorLiquido() {
+        return valorLiquido;
+    }
+    public void setValorLiquido(double valorLiquido) {
+        this.valorLiquido = valorLiquido;
     }
     public String getObservacao() {
         return observacao;
@@ -115,19 +123,19 @@ public class Pedido {
     
     public void calcularTotais() {
         for (Item item: this.listaItens) {
-            this.acrescimoTotal += item.getAcrescimo();
-            this.descontoTotal += item.getDesconto();
-            this.valorTotal += item.getValorTotal();
+            this.acrescimoItens += item.getAcrescimo();
+            this.descontoItens += item.getDesconto();
+            this.valorBruto += item.getValorBruto();
+            this.valorLiquido += item.getValorLiquido();
         }
 
-        this.acrescimoTotal += this.acrescimoPedido;
-        this.descontoTotal += this.descontoPedido;
-                    
-        this.valorTotal += this.acrescimoPedido - this.descontoPedido;
-        
-        if (this.descontoTotal >= this.valorTotal){
-            descontoTotal = valorTotal;
-            valorTotal = 0;
-        } 
+        if (this.valorLiquido + this.acrescimoPedido < this.descontoPedido) {
+                   
+            this.descontoPedido = this.valorLiquido + this.acrescimoPedido;
+            valorLiquido  = 0;
+
+        }  else {
+            this.valorLiquido += this.acrescimoPedido - this.descontoPedido;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package br.com.loja_gp2.loja_gp2.model.modelPuro;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -12,15 +13,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
     
     //#region propriedades
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(nullable = false)
     private String nome;
     @Column(nullable = false, unique = true)
@@ -45,7 +48,7 @@ public class Usuario {
     //#endregion propriedades
     
     //#region getters and setters
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -125,4 +128,40 @@ public class Usuario {
         this.listaLog = listaLog;
     }
     //#endregion getters and setters
+
+    // Daqui pra baixo é implementação do userdetails
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+       return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+       return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+       return true;
+    }
 }

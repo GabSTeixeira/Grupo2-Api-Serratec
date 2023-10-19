@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
@@ -19,6 +18,7 @@ import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorExce
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Categoria;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Produto;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 import br.com.loja_gp2.loja_gp2.repository.CategoriaRepository;
 
@@ -61,11 +61,21 @@ public class CategoriaService {
 
         categoria.setStatus(true);
 
+        Usuario usuarioDummy = new Usuario();
+        usuarioDummy.setId(1);
+
         try {
             categoria = categoriaRepository.save(categoria);
         } catch (Exception e) {
             throw new ResourceBadRequestException("categoria", "Não foi possível cadastrar");
         }
+
+        logService.registrarLog(new Log(
+                    Produto.class.getSimpleName(),
+                    EnumTipoAlteracaoLog.UPDATE,
+                    ObjetoToJson.conversor(categoria),
+                    ObjetoToJson.conversor(categoria),
+                    usuarioDummy));
 
         return modelMapper.map(categoria, CategoriaResponseDTO.class);
     }
@@ -92,20 +102,20 @@ public class CategoriaService {
 
             BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
 
-
             categoriaAlterada = categoriaRepository.save(alteracaoCategoria);
 
-            logService.registrarLog(new Log(
-                Categoria.class.getSimpleName(),
-                EnumTipoAlteracaoLog.UPDATE,
-                ObjetoToJson.conversor(categoriaOriginal),
-                ObjetoToJson.conversor(categoriaAlterada),
-                usuarioDummy));
         }
         catch (Exception e) {
             throw new ResourceBadRequestException("categoria","Não foi possivel alterar a categoria");
         }
 
+        logService.registrarLog(new Log(
+            Categoria.class.getSimpleName(),
+            EnumTipoAlteracaoLog.UPDATE,
+            ObjetoToJson.conversor(categoriaOriginal),
+            ObjetoToJson.conversor(categoriaAlterada),
+            usuarioDummy));
+        
         return modelMapper.map(categoriaAlterada, CategoriaResponseDTO.class);//
         
     }
@@ -131,16 +141,17 @@ public class CategoriaService {
             
             categoriaAlterada = categoriaRepository.save(categoriaAlterada);
 
-            logService.registrarLog(new Log(
-                Categoria.class.getSimpleName(), 
-                EnumTipoAlteracaoLog.UPDATE, 
-                ObjetoToJson.conversor(categoriaOriginal), 
-                ObjetoToJson.conversor(categoriaAlterada), 
-                usuarioDummy));
-
+            
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException();
         }
+
+        logService.registrarLog(new Log(
+            Categoria.class.getSimpleName(), 
+            EnumTipoAlteracaoLog.UPDATE, 
+            ObjetoToJson.conversor(categoriaOriginal), 
+            ObjetoToJson.conversor(categoriaAlterada), 
+            usuarioDummy));
     }
 
     public void reativarCategoria(Long id) {
@@ -163,14 +174,15 @@ public class CategoriaService {
             categoriaAlterada = categoriaRepository.save(categoriaAlterada);
             
 
-            logService.registrarLog(new Log(
-                    Categoria.class.getSimpleName(),
-                    EnumTipoAlteracaoLog.UPDATE,
-                    ObjetoToJson.conversor(categoriaOriginal),
-                    ObjetoToJson.conversor(categoriaAlterada),
-                    usuarioDummy));
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException();
         }
+        
+        logService.registrarLog(new Log(
+                Categoria.class.getSimpleName(),
+                EnumTipoAlteracaoLog.UPDATE,
+                ObjetoToJson.conversor(categoriaOriginal),
+                ObjetoToJson.conversor(categoriaAlterada),
+                usuarioDummy));
     }
 }

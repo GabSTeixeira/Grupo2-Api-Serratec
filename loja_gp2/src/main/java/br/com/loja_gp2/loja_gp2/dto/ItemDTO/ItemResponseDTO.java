@@ -5,7 +5,8 @@ import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 public class ItemResponseDTO extends ItemBaseDTO {
     private long id;
     private ProdutoResponseDTO produto;
-    private double valorTotal;
+    private double valorBruto;
+    private double valorLiquido;
 
     public long getId() {
         return id;
@@ -22,13 +23,21 @@ public class ItemResponseDTO extends ItemBaseDTO {
     public void setProduto (ProdutoResponseDTO produto) {
         this.produto = produto;
     }
-
-    public double getValorTotal() {
-        return valorTotal;
+    
+    public double getValorBruto() {
+        return valorBruto;
     }
 
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setValorBruto(double valorBruto) {
+        this.valorBruto = valorBruto;
+    }
+
+    public double getValorLiquido() {
+        return valorLiquido;
+    }
+
+    public void setValorLiquido(double valorLiquido) {
+        this.valorLiquido = valorLiquido;
     }
     
 }

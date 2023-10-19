@@ -66,7 +66,6 @@ public class ItemService {
                  throw new ResourceBadRequestException("Item", "Estoque indisponivel para o produto com Id: "+itemReq.getProduto().getId());
             }
             
-
             ProdutoResponseDTO produtoAtualizado = produtoService.buscarProdutoPorId(itemReq.getProduto().getId());
             produtoAtualizado.setEstoque(produtoAtualizado.getEstoque() - itemReq.getQuantidade());
             Item item = modelMapper.map(itemReq, Item.class);
