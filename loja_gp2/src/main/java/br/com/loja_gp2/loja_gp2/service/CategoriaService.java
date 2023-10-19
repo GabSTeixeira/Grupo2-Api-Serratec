@@ -54,6 +54,24 @@ public class CategoriaService {
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);
     }
 
+    public List<CategoriaResponseDTO> buscarTodasCategoriasAtivas(){
+        List<Categoria> categoriasAtivas = categoriaRepository.findAllByStatus(true);
+        
+        List<CategoriaResponseDTO> listaCategoriaResponse = categoriasAtivas.stream()
+        .map(c -> modelMapper.map(c, CategoriaResponseDTO.class)).collect(Collectors.toList());
+        
+        return listaCategoriaResponse;
+    }
+
+    public List<CategoriaResponseDTO> buscarTodasCategoriasInativas(){
+        List<Categoria> categoriasInativas = categoriaRepository.findAllByStatus(false);
+        
+        List<CategoriaResponseDTO> listaCategoriaResponse = categoriasInativas.stream()
+        .map(c -> modelMapper.map(c, CategoriaResponseDTO.class)).collect(Collectors.toList());
+        
+        return listaCategoriaResponse;
+    }
+
     public CategoriaResponseDTO cadastrarCategoria(CategoriaRequestDTO categoriaRequest){
 
         Categoria categoria = modelMapper.map(categoriaRequest, Categoria.class);

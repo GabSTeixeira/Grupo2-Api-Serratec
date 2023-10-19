@@ -63,6 +63,24 @@ public class ProdutoService {
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
     }
 
+    public List<ProdutoResponseDTO> buscarTodasProdutosAtivos(){
+        List<Produto> produtosAtivos = produtoRepository.findAllByStatus(true);
+        
+        List<ProdutoResponseDTO> listaProdutoResponse = produtosAtivos.stream()
+        .map(c -> modelMapper.map(c, ProdutoResponseDTO.class)).collect(Collectors.toList());
+        
+        return listaProdutoResponse;
+    }
+
+    public List<ProdutoResponseDTO> buscarTodasProdutosInativos(){
+        List<Produto> produtosInativos = produtoRepository.findAllByStatus(true);
+            
+        List<ProdutoResponseDTO> listaProdutoResponse = produtosInativos.stream()
+        .map(c -> modelMapper.map(c, ProdutoResponseDTO.class)).collect(Collectors.toList());
+            
+        return listaProdutoResponse;
+    }
+
    public List<ProdutoResponseDTO> buscarProdutosPorCategoria(Long id) {
         CategoriaResponseDTO categoriaEncontrada = categoriaService.buscarCategoriaPorId(id);
         

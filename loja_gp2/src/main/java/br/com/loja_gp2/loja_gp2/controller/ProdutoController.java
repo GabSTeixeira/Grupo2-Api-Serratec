@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.ProdutoService;
@@ -76,6 +75,23 @@ public class ProdutoController {
         List<ProdutoResponseDTO> listaProduto = produtoService.buscarProdutosPorCategoria(id);
 
         return ResponseEntity.ok(listaProduto);
+    }
+
+    @GetMapping("/ativos")  
+    public ResponseEntity<List<ProdutoResponseDTO>> getAllActive() {
+
+        List<ProdutoResponseDTO> listaProdutosAtivos = produtoService.buscarTodasProdutosAtivos();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaProdutosAtivos);
+    }
+
+
+    @GetMapping("/inativas")  
+    public ResponseEntity<List<ProdutoResponseDTO>> getAllInactive() {
+
+        List<ProdutoResponseDTO> listaProdutosInativos = produtoService.buscarTodasProdutosInativos();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaProdutosInativos);
     }
 
     @PostMapping

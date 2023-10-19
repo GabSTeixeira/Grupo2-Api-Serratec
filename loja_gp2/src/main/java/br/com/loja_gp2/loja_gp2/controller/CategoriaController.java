@@ -60,9 +60,24 @@ public class CategoriaController {
 
         CategoriaResponseDTO categoriaEncontrada = categoriaService.buscarCategoriaPorId(id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(categoriaEncontrada);
+        return ResponseEntity.status(HttpStatus.OK).body(categoriaEncontrada);
     }
     
+    @GetMapping("/ativas")  
+    public ResponseEntity<List<CategoriaResponseDTO>> getAllActive() {
+
+        List<CategoriaResponseDTO> listaCategoriasAtivas = categoriaService.buscarTodasCategoriasAtivas();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaCategoriasAtivas);
+    }
+
+    @GetMapping("/inativas")  
+    public ResponseEntity<List<CategoriaResponseDTO>> getAllInactive() {
+
+        List<CategoriaResponseDTO> listaCategoriasInativas = categoriaService.buscarTodasCategoriasInativas();
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaCategoriasInativas);
+    }
 
     @PostMapping
     @Operation(
