@@ -188,6 +188,15 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
+    @Operation(
+        summary = "Login",
+        description = "Faz o login de usuário"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuario logado com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Usuario ou senha incorretos"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
+    })
     public ResponseEntity<UsuarioLoginResponseDTO> logar(@RequestBody UsuarioLoginRequestDTO usuariologinRequest){
         
         UsuarioLoginResponseDTO usuarioLogado = usuarioService.logar(usuariologinRequest.getEmail(), usuariologinRequest.getSenha());

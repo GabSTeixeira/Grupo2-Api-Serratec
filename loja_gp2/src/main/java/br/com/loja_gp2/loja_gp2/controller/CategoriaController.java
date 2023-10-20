@@ -37,7 +37,8 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categorias retornadas com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
-        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado")
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
     })
     public ResponseEntity<List<CategoriaResponseDTO>> getAll() {
 
@@ -54,7 +55,6 @@ public class CategoriaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categoria encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Categoria não encontrado"),
-        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })
@@ -72,9 +72,7 @@ public class CategoriaController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Categorias ativas encontradas com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
-        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
-        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
     })
     public ResponseEntity<List<CategoriaResponseDTO>> getAllActive() {
 
