@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,7 +172,6 @@ public class ProdutoService {
 
         try {
             produto = produtoRepository.save(produto);
-
         } catch (Exception e) {
             throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
         }
@@ -183,15 +183,9 @@ public class ProdutoService {
                     ObjetoToJson.conversor(produto),
                     usuarioDummy));
 
-        ProdutoResponseDTO produtoResponse;
-
-        try {
-            produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
+        ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
         
-            produtoResponse.setCategoria(categoriaResponse);
-        } catch (Exception e) {
-            throw new ResourceBadRequestException("Deu erro aqui!");
-        }
+        produtoResponse.setCategoria(categoriaResponse);
         
         return produtoResponse;
 

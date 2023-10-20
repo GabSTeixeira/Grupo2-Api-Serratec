@@ -2,6 +2,8 @@ package br.com.loja_gp2.loja_gp2.handler;
 
 import java.util.Date;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -112,5 +114,15 @@ public class RestExceptionHandler {
         ErrorResposta erro = new ErrorResposta(403, "Forbidden", ex.getMessage(), data);
 
         return new ResponseEntity<>(erro, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResposta> handlerConstraintViolationException(Exception ex) {
+
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(400, "BadRequest", "Já existe um cadastro com essas informações.", data);
+
+        return new ResponseEntity<>(erro, HttpStatus.BAD_REQUEST);
     }
 }
