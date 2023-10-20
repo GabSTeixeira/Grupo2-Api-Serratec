@@ -72,9 +72,14 @@ public class ItemService {
             
             item.setProduto(modelMapper.map(produtoAtualizado, Produto.class));
             
-            // verifica se não é possivel realizar a venda para aquele produto    
-            if (produtoService.buscarProdutoPorId(itemReq.getProduto().getId()).getCategoria().isStatus() == false) {
-                throw new ResourceBadRequestException("Item", "Categoria não esta disponivel para o produto com Id: "+ itemReq.getProduto().getId());
+            // verifica se não é possivel realizar a venda para aquele produto
+            
+            if(produtoAtualizado.isStatus() == false) {
+                throw new ResourceBadRequestException("item", "Produto com id, "+produtoAtualizado.getId()+" não está disponível.");
+            }
+
+            if (produtoAtualizado.getCategoria().isStatus() == false) {
+                throw new ResourceBadRequestException("Item", "Categoria não esta disponivel para o produto com Id: "+itemReq.getProduto().getId()+".");
             }
 
             listaItens.add(item);

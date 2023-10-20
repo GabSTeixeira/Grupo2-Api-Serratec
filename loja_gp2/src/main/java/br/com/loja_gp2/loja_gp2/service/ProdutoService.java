@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.JpaSort.Path;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +67,10 @@ public class ProdutoService {
             throw new ResourceNotFoundException(id, "produto");
         }
 
+        if(produtoEncontrado.get().isStatus() == false){
+            throw new ResourceBadRequestException("Este produto não está disponível");
+        }
+
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
     }
 
@@ -119,8 +123,7 @@ public class ProdutoService {
             throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
         }
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+      Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
             produto = produtoRepository.save(produto);    
@@ -131,10 +134,10 @@ public class ProdutoService {
 
         logService.registrarLog(new Log(
                     Produto.class.getSimpleName(),
-                    EnumTipoAlteracaoLog.UPDATE,
+                    EnumTipoAlteracaoLog.CREATE,
                     ObjetoToJson.conversor(produto),
                     ObjetoToJson.conversor(produto),
-                    usuarioDummy));
+                    usuario));
 
         ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
         produtoResponse.setCategoria(categoriaResponse);
@@ -203,12 +206,10 @@ public class ProdutoService {
         produto.setStatus(produtoEncontrado.get().isStatus());
         produto.setId(id);
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1l);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
             produto = produtoRepository.save(produto);
-
         } catch (Exception e) {
             throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
         }
@@ -218,9 +219,13 @@ public class ProdutoService {
                     EnumTipoAlteracaoLog.UPDATE,
                     ObjetoToJson.conversor(produtoEncontrado.get()),
                     ObjetoToJson.conversor(produto),
-                    usuarioDummy));
+                    usuario));
 
-        return modelMapper.map(produto, ProdutoResponseDTO.class);
+        ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
+        
+        produtoResponse.setCategoria(categoriaResponse);
+        
+        return produtoResponse;
 
     }
 
@@ -237,8 +242,7 @@ public class ProdutoService {
         Produto produtoOriginal = new Produto();
         Produto produtoAlterado = produtoEncontrado.get();
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
@@ -254,7 +258,7 @@ public class ProdutoService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal),
                 ObjetoToJson.conversor(produtoAlterado),
-                usuarioDummy));
+                usuario));
     }
 
     @Transactional
@@ -269,8 +273,8 @@ public class ProdutoService {
         Produto produtoOriginal = new Produto();
         Produto produtoAlterado = produtoEncontrado.get();
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         try {
             BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
             produtoAlterado.setStatus(true);
@@ -285,7 +289,7 @@ public class ProdutoService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal), 
                 ObjetoToJson.conversor(produtoAlterado), 
-                usuarioDummy));
+                usuario));
     }
 
     public long verificarEstoque(long id) {

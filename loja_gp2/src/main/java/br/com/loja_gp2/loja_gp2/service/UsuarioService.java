@@ -138,8 +138,7 @@ public class UsuarioService {
         Usuario usuarioAlterado = usuarioEncontrado.get();
 
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1l);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
@@ -159,7 +158,7 @@ public class UsuarioService {
             EnumTipoAlteracaoLog.UPDATE, 
             ObjetoToJson.conversor(usuarioOriginal), 
             ObjetoToJson.conversor(usuarioAlterado),
-            usuarioDummy));
+            usuario));
 
         return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);//
     }
@@ -184,8 +183,7 @@ public class UsuarioService {
         Usuario usuarioOriginal = new Usuario();
         Usuario usuarioAlterado = usuarioEncontrado.get();
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1l);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
@@ -202,7 +200,7 @@ public class UsuarioService {
             EnumTipoAlteracaoLog.UPDATE, 
             ObjetoToJson.conversor(usuarioOriginal), 
             ObjetoToJson.conversor(usuarioAlterado), 
-            usuarioDummy));
+            usuario));
     }
 
     public UsuarioResponseDTO obterPorEmail(String email){

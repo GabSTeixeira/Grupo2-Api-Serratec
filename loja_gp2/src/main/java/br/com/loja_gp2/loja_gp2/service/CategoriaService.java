@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
@@ -50,6 +51,10 @@ public class CategoriaService {
         if(categoriaEncontrada.isEmpty()){
             throw new ResourceNotFoundException(id, "categoria");
         }
+        
+        if(categoriaEncontrada.get().isStatus() == false){
+            throw new ResourceBadRequestException("Esta categoria não está disponível");
+        }
 
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);
     }
@@ -79,8 +84,7 @@ public class CategoriaService {
 
         categoria.setStatus(true);
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
             categoria = categoriaRepository.save(categoria);
@@ -93,7 +97,7 @@ public class CategoriaService {
                     EnumTipoAlteracaoLog.UPDATE,
                     ObjetoToJson.conversor(categoria),
                     ObjetoToJson.conversor(categoria),
-                    usuarioDummy));
+                    usuario));
 
         return modelMapper.map(categoria, CategoriaResponseDTO.class);
     }
@@ -113,8 +117,7 @@ public class CategoriaService {
         Categoria categoriaOriginal = new Categoria();
         Categoria categoriaAlterada;
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
 
@@ -132,7 +135,7 @@ public class CategoriaService {
             EnumTipoAlteracaoLog.UPDATE,
             ObjetoToJson.conversor(categoriaOriginal),
             ObjetoToJson.conversor(categoriaAlterada),
-            usuarioDummy));
+            usuario));
         
         return modelMapper.map(categoriaAlterada, CategoriaResponseDTO.class);//
         
@@ -150,8 +153,7 @@ public class CategoriaService {
         Categoria categoriaOriginal = new Categoria();
         Categoria categoriaAlterada = categoriaEncontrada.get();
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
@@ -169,7 +171,7 @@ public class CategoriaService {
             EnumTipoAlteracaoLog.UPDATE, 
             ObjetoToJson.conversor(categoriaOriginal), 
             ObjetoToJson.conversor(categoriaAlterada), 
-            usuarioDummy));
+            usuario));
     }
 
     public void reativarCategoria(Long id) {
@@ -182,8 +184,7 @@ public class CategoriaService {
         Categoria categoriaOriginal = new Categoria();
         Categoria categoriaAlterada = categoriaEncontrada.get();
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(categoriaEncontrada.get(), categoriaOriginal);
@@ -201,6 +202,6 @@ public class CategoriaService {
                 EnumTipoAlteracaoLog.UPDATE,
                 ObjetoToJson.conversor(categoriaOriginal),
                 ObjetoToJson.conversor(categoriaAlterada),
-                usuarioDummy));
+                usuario));
     }
 }
