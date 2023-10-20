@@ -55,7 +55,10 @@ public class UsuarioService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
+    /**
+     * Delega uma busca de uma lista com todos os usuários dentro do banco de dados para o Repository.
+     * @return Uma lista de UsuarioResponseDTO
+     */
     public List<UsuarioResponseDTO> buscarTodosUsuario() {
 
         List<Usuario> listaUsuario = usuarioRepository.findAll();
@@ -68,6 +71,11 @@ public class UsuarioService {
         return listaUsuarioResponse;
     }
 
+    /**
+     * Delega uma busca de um usuário por id no banco de dados para o Repository.
+     * @param id
+     * @return Um UsuarioResponseDTO
+     */
     public UsuarioResponseDTO buscarUsuarioPorId(long id) {
 
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
@@ -79,6 +87,10 @@ public class UsuarioService {
         return modelMapper.map(usuarioEncontrado.get(), UsuarioResponseDTO.class);
     }
 
+    /**
+     * Delega uma busca de todos os usuários ativos no bando de dados para o Repository.
+     * @return Uma lista de UsuarioResponseDTO
+     */
     public List<UsuarioResponseDTO> buscarTodosUsuariosAtivos(){
 
         List<Usuario> listaUsuariosAtivos = usuarioRepository.findAllByStatus(true);
@@ -89,6 +101,10 @@ public class UsuarioService {
         return listaUsuarioResponse;
     }
 
+    /**
+     * Delega uma busca de todos os usuários inativos no bando de dados para o Repository.
+     * @return Uma lista de UsuarioResponseDTO
+     */
     public List<UsuarioResponseDTO> buscarTodosUsuariosInativos(){
 
         List<Usuario> listaUsuariosInativos = usuarioRepository.findAllByStatus(false);
@@ -99,6 +115,11 @@ public class UsuarioService {
         return listaUsuarioResponse;
     }
 
+    /**
+     * Delega um cadastro de um usuário no banco de dados para o Repository.
+     * @param usuarioRequest
+     * @return Uma UsuarioResponseDTO
+     */
     @Transactional
     public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO usuarioRequest) {
 
@@ -122,6 +143,12 @@ public class UsuarioService {
         return modelMapper.map(usuario, UsuarioResponseDTO.class);
     }
     
+    /**
+     * Delega a alteração de um usuario no banco de dados para o Repository.
+     * @param id
+     * @param usuarioRequest
+     * @return Uma UsuarioResponseDTO
+     */
     @Transactional
     public UsuarioResponseDTO alterarUsuario(long id, UsuarioRequestDTO usuarioRequest) {
 
@@ -163,15 +190,27 @@ public class UsuarioService {
         return modelMapper.map(usuarioAlterado, UsuarioResponseDTO.class);//
     }
 
+    /**
+     * Recebe e passa um id e um status false pro método MudasStatusUsuario.
+     * @param id
+     */
     public void inativarUsuario(long id) {
         mudarStatusUsuario(id, false);
     }
 
+    /**
+     * Recebe e passa um id e um status true pro método MudasStatusUsuario.
+     * @param id
+     */
     public void retivarUsuario(long id) {
         mudarStatusUsuario(id, true);
     }
 
-    // vai mudar o sistema de usuario que fez a modificação provavelmente, então seria necessario mais um parametro aqui
+    /**
+     * Delega uma ativação ou inativação de um usuário no banco de dados para o Repository.
+     * @param id
+     * @param status
+     */
     @Transactional
     private void mudarStatusUsuario(long id, boolean status) {
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
@@ -203,6 +242,11 @@ public class UsuarioService {
             usuario));
     }
 
+    /**
+     * Delega uma busca de um usuário no bando de dados pelo seu email para o Repository.
+     * @param email
+     * @return Um UsuarioResponseDTO
+     */
     public UsuarioResponseDTO obterPorEmail(String email){
         Optional<Usuario> optUsuario =  usuarioRepository.findByEmail(email);
 
@@ -210,10 +254,10 @@ public class UsuarioService {
     }
 
     /**
-     * 
+     * Realiza o login de um usuário na API.
      * @param email
      * @param senha
-     * @return
+     * @return Um UsuarioLoginResponseDTO
      */
     public UsuarioLoginResponseDTO logar(String email, String senha){
         // Aqui que a autenticação acontece dentro do spring automagicamente.

@@ -23,6 +23,10 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    /**
+     * Faz o envio de um email.
+     * @param email
+     */
     private void enviar(Email email) {
         
         try {
@@ -46,6 +50,11 @@ public class EmailService {
     
     }
 
+    /**
+     * Prepara o email que será enviado quando um pedido for finalizado. 
+     * @param usuario
+     * @param pedido
+     */
     public void criarEmailPedido(Usuario usuario, Pedido pedido){
         final String DADO = "Pedido";
         final String ASSUNTO = "Confirmação de pedido";
@@ -102,7 +111,10 @@ public class EmailService {
         
     }
 
-
+    /**
+     * Prepara o email que será enviado quando um usuário faz um cadastro.
+     * @param usuario
+     */
     public void criarEmailCadastro(Usuario usuario){
         final String DADO = "Cadastro";
         final String ASSUNTO = "Confirmação de cadastro";

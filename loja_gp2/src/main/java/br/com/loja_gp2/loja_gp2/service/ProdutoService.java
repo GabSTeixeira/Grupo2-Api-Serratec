@@ -44,7 +44,10 @@ public class ProdutoService {
     @Autowired
     private ModelMapper modelMapper;
 
-
+    /**
+     * Delega uma busca de uma lista com todos os produtos dentro do banco de dados para o Repository.
+     * @return Uma lista de ProdutoResponseDTO
+     */
     public List<ProdutoResponseDTO> buscarTodosProdutos() {
 
         List<Produto> listaProduto = produtoRepository.findAll();
@@ -55,6 +58,11 @@ public class ProdutoService {
         return listaProdutoResponse;
     }
 
+    /**
+     * Delega uma busca de um produto por id no banco de dados para o Repository.
+     * @param id
+     * @return Um ProdutoResponseDTO
+     */
     public ProdutoResponseDTO buscarProdutoPorId(Long id) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
@@ -69,6 +77,10 @@ public class ProdutoService {
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
     }
 
+    /**
+     * Delega uma busca de todos os produtos ativos no bando de dados para o Repository.
+     * @return Uma lista de ProdutoResponseDTO
+     */
     public List<ProdutoResponseDTO> buscarTodasProdutosAtivos(){
         List<Produto> produtosAtivos = produtoRepository.findAllByStatus(true);
         
@@ -78,6 +90,10 @@ public class ProdutoService {
         return listaProdutoResponse;
     }
 
+    /**
+     * Delega uma busca de todos os produtos inativos no bando de dados para o Repository.
+     * @return Uma lista de ProdutoResponseDTO
+     */
     public List<ProdutoResponseDTO> buscarTodasProdutosInativos(){
         List<Produto> produtosInativos = produtoRepository.findAllByStatus(true);
             
@@ -87,7 +103,12 @@ public class ProdutoService {
         return listaProdutoResponse;
     }
 
-   public List<ProdutoResponseDTO> buscarProdutosPorCategoria(Long id) {
+    /**
+     * Delega uma busca de todos os produtos por categoria no banco de dados para o Repository.
+     * @param id
+     * @return Uma lista de ProdutoResponseDTO
+     */
+    public List<ProdutoResponseDTO> buscarProdutosPorCategoria(Long id) {
         CategoriaResponseDTO categoriaEncontrada = categoriaService.buscarCategoriaPorId(id);
         
         Categoria categoria = modelMapper.map(categoriaEncontrada, Categoria.class);
@@ -99,6 +120,11 @@ public class ProdutoService {
         return listaProdutoResponse;
     }
 
+    /**
+     * Delega um cadastro de um produto no banco de dados para o Repository.
+     * @param produtoRequest
+     * @return Uma ProdutoResponseDTO
+     */
     public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest) {
 
         Produto produto = modelMapper.map(produtoRequest, Produto.class);
@@ -139,6 +165,12 @@ public class ProdutoService {
         return produtoResponse;
     }
 
+    /**
+     * Delega a alteração de um produto no banco de dados para o Repository.
+     * @param id
+     * @param produtoRequest
+     * @return Uma ProdutoResponseDTO
+     */
     @Transactional
     public ProdutoResponseDTO alterarProduto(long id, ProdutoRequestDTO produtoRequest) {
 
@@ -189,6 +221,10 @@ public class ProdutoService {
 
     }
 
+    /**
+     * Delega uma inativação de um produto no banco de dados para o Repository.
+     * @param id
+     */
     @Transactional
     public void inativarProduto(Long id) {
 
@@ -221,6 +257,10 @@ public class ProdutoService {
                 usuario));
     }
 
+    /**
+     * Delega uma reativação de um produto no banco de dados para o Repository.
+     * @param id
+     */
     @Transactional
     public void reativarProduto(Long id) {
 
@@ -252,6 +292,11 @@ public class ProdutoService {
                 usuario));
     }
 
+    /**
+     * Verifica a quantidade em estoque de um produto no banco de dados trazido pelo ProdutoRepository.
+     * @param id
+     * @return Um Long com a quantidade em estoque do produto
+     */
     public long verificarEstoque(long id) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
@@ -262,6 +307,12 @@ public class ProdutoService {
         return produtoEncontrado.get().getEstoque();
     }
 
+    /**
+     * Retira uma quantidade do estoque de um produto no banco de dados trazido pelo ProdutoRepository.
+     * @param id
+     * @param quantidade
+     * @return
+     */
     public ProdutoResponseDTO retirarEstoque(long id, long quantidade) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 

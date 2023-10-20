@@ -7,9 +7,7 @@ public class ObjetoToJson {
     private static Gson gson = new Gson();
 
     /**
-     * converte qualquer objeto para o tipo string em formato json
-     * 
-     * 
+     * Converte qualquer objeto para o tipo string em formato json.
      * @param obj
      * @return json string
      */

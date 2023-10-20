@@ -30,10 +30,12 @@ public class ItemService {
 
     @Autowired
     private ModelMapper modelMapper;
-
     
-    // de fato remove do estoque de produto e cadastra na tabela de itens
-    
+    /**
+     * Delega um cadastro de uma lista de itens de um pedido no banco de dados para o Repository
+     * @param pedido
+     * @return
+     */
     public List<ItemResponseDTO> cadastrarItensPedido (Pedido pedido) {
         List<Item> listaItens;
 
@@ -56,7 +58,11 @@ public class ItemService {
     }
 
 
-    // verifica se a compra é possivel e atualiza os valores de itens
+    /**
+     * Percorre um lista de ItemRequest de um PedidoRequest fazendo verificações de validação de compra.
+     * @param pedidoRequest
+     * @return Uma lista de Item
+     */
     public List<Item> atualizarListaItens (PedidoRequestDTO pedidoRequest) {
         List<Item> listaItens = new ArrayList<>();
 

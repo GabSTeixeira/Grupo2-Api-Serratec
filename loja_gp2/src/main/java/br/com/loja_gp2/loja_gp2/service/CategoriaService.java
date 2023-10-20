@@ -35,6 +35,10 @@ public class CategoriaService {
     @Autowired
     private ModelMapper modelMapper;
     
+    /**
+     * Delega uma busca de uma lista com todas as categorias dentro do banco de dados para o Repository.
+     * @return Uma lista de CategoriaResponseDTO
+     */
     public List<CategoriaResponseDTO> buscarTodasCategorias() {
 
         List<Categoria> listaCategoria = categoriaRepository.findAll();
@@ -44,7 +48,12 @@ public class CategoriaService {
 
         return listaCategoriaResponse;
     }
-
+    
+    /**
+     * Delega uma busca de uma categoria por id no banco de dados para o Repository.
+     * @param id
+     * @return Uma CategoriaResponseDTO
+     */
     public CategoriaResponseDTO buscarCategoriaPorId(Long id) {
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
         
@@ -59,6 +68,10 @@ public class CategoriaService {
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);
     }
 
+    /**
+     * Delega uma busca de todas as categorias ativas no bando de dados para o Repository.
+     * @return Uma lista de CategoriaResponseDTO
+     */
     public List<CategoriaResponseDTO> buscarTodasCategoriasAtivas(){
         List<Categoria> categoriasAtivas = categoriaRepository.findAllByStatus(true);
         
@@ -68,6 +81,10 @@ public class CategoriaService {
         return listaCategoriaResponse;
     }
 
+    /**
+     * Delega uma busca de todas as categorias inativas no banco de dados para o Repository.
+     * @return Uma lista de CategoriaResponseDTO
+     */
     public List<CategoriaResponseDTO> buscarTodasCategoriasInativas(){
         List<Categoria> categoriasInativas = categoriaRepository.findAllByStatus(false);
         
@@ -77,6 +94,11 @@ public class CategoriaService {
         return listaCategoriaResponse;
     }
 
+    /**
+     * Delega um cadastro de uma categoria no banco de dados para o Repository.
+     * @param categoriaRequest
+     * @return Uma CategoriaResponseDTO
+     */
     public CategoriaResponseDTO cadastrarCategoria(CategoriaRequestDTO categoriaRequest){
 
         Categoria categoria = modelMapper.map(categoriaRequest, Categoria.class);
@@ -102,6 +124,12 @@ public class CategoriaService {
         return modelMapper.map(categoria, CategoriaResponseDTO.class);
     }
 
+    /**
+     * Delega a alteração de uma categoria no banco de dados para o Repository.
+     * @param id
+     * @param categoriaRequest
+     * @return Uma CategoriaResponseDTO
+     */
     public CategoriaResponseDTO alterarCategoria(long id, CategoriaRequestDTO categoriaRequest) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
@@ -141,6 +169,10 @@ public class CategoriaService {
         
     }
     
+    /**
+     * Delega uma inativação de categoria no banco de dados para o Repository.
+     * @param id
+     */
     public void inativarCategoria(Long id) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
@@ -174,6 +206,10 @@ public class CategoriaService {
             usuario));
     }
 
+    /**
+     * Delega uma reativação de categoria no banco de dados para o Repository.
+     * @param id
+     */
     public void reativarCategoria(Long id) {
 
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
