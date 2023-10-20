@@ -53,22 +53,55 @@ public class EmailService {
         List<String> destinatarios = new ArrayList<>();
         destinatarios.add(usuario.getEmail());
 
-        String mensagem = new String();
+        String MENSAGEM = "".concat("<body>")
+        .concat("<p style=\"text-align:center\">")
+        .concat("<img alt=\"\" src=\"https://i.imgur.com/4E5yT11.png\" style=\"height:275px; width:1200px\" /></p>")
+        .concat("h1 style=\"text-align:center\">")
+        .concat("<span style=\"color:#000000; font-family:Times New Roman,Times,serif\">Obrigado por Comprar Conosco!</span></h1>")
+        .concat("<h2 style=\"text-align:center\">")
+        .concat("<span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("<span style=\"font-size:16px\">Confira todas as informa&ccedil;&otilde;es do seu pedido a seguir.</span></span></h2>")
+        .concat("<table align=\"center\" border=\"1\" cellpadding=\"1\" style=\"width:1080px\">")
+        .concat("<tbody><tr>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">Produto</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">Quantidade</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">Acrescimo</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">Desconto</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">Valor Bruto</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\"><span style=\"background-color:#ffffff\">Valor Liquido</span></span></td></tr>")
 
-        mensagem.concat("<body>");
-        
-        mensagem.concat("<table border=1>");
-        mensagem.concat("<tr><th>Nome</th><th>Quantidade</th><th>Valor</th>");
-        
-        for (Item item :  pedido.getListaItens()) {     
-            mensagem.concat("<tr><td>"+item.getProduto().getNome()+"</td>");
-            mensagem.concat("<td>"+item.getQuantidade()+"</td>");
-            mensagem.concat("<td>"+item.getValorLiquido()+"</td></tr>");
+        .concat("<tr><th>Nome</th><th>Quantidade</th><th>Valor</th>");
+        long totalquantidade = 0; 
+        long totalacrescimo = 0;
+        long totaldesconto = 0;
+
+        for (Item item :  pedido.getListaItens()) { 
+            totalquantidade += item.getQuantidade();
+            totalacrescimo += item.getAcrescimo();
+            totaldesconto += item.getDesconto();    
+            MENSAGEM += "".concat("<tr><td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getProduto().getNome()+"</span></td>")
+            .concat("<td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getQuantidade()+"</span></td>")
+            .concat("<td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getAcrescimo()+"</span></td>")
+            .concat("<td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getDesconto()+"</span></td>")
+            .concat("<td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getValorBruto()+"</span></td>")
+            .concat("<td><span style=\"font-family:Arial,Helvetica,sans-serif\">"+item.getValorLiquido()+"</span></td></tr>");
         }
 
-        mensagem.concat("</table></body>");
+        MENSAGEM += "".concat("<tr><td><span style=\"font-family:Times New Roman,Times,serif\">Totais</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">"+totalquantidade+"</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">"+(totalacrescimo+pedido.getAcrescimoPedido())+"</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">"+(totaldesconto+pedido.getDescontoPedido())+"</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">"+pedido.getValorBruto()+"</span></td>")
+        .concat("<td><span style=\"font-family:Times New Roman,Times,serif\">"+pedido.getValorLiquido()+"</span></td></tr>")
+        
+        .concat("</tbody><>")
 
-        Email email = new Email(ASSUNTO, mensagem, DADO+"@EspacoDosGames.com", destinatarios);
+        .concat("<h2 style=\"text-align:center\">")
+        .concat("<span style=\"font-family:Times New Roman,Times,serif\">Logo enviaremos o seu pedido, esteja atento a novas informa&ccedil;&otilde;es relacionadas a entrega dos seus produtos!</span></h2>")
+
+        .concat("</body>");
+
+        Email email = new Email(ASSUNTO, MENSAGEM, DADO+"@EspacoDosGames.com", destinatarios);
 
         enviar(email);
 
