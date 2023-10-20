@@ -37,6 +37,7 @@ public class PedidoController {
         @ApiResponse(responseCode = "201", description = "Pedido Criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
         @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })
@@ -57,6 +58,7 @@ public class PedidoController {
         @ApiResponse(responseCode = "200", description = "Pedido encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
         @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })
@@ -77,6 +79,7 @@ public class PedidoController {
         @ApiResponse(responseCode = "200", description = "Pedido retornados com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
         @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })

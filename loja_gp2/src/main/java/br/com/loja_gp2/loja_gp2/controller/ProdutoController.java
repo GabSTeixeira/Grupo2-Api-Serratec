@@ -38,6 +38,7 @@ public class ProdutoController {
         @ApiResponse(responseCode = "200", description = "Produtos retornados com sucesso" ),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
         @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })
@@ -56,7 +57,6 @@ public class ProdutoController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
-        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
         @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
 
     })
@@ -86,9 +86,7 @@ public class ProdutoController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produtos ativos encontrados com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição"),
-        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
-        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante o processamento da requisição")
     }) 
     public ResponseEntity<List<ProdutoResponseDTO>> getAllActive() {
 
