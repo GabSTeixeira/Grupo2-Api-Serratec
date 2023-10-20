@@ -1,5 +1,8 @@
 package br.com.loja_gp2.loja_gp2.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +12,10 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.JpaSort.Path;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
 import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
@@ -42,6 +48,7 @@ public class ProdutoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    final String PATH_PASTA_IMAGEM = Paths.get("").toAbsolutePath().toString().concat("\\files\\images\\");
 
     public List<ProdutoResponseDTO> buscarTodosProdutos() {
 
@@ -133,6 +140,41 @@ public class ProdutoService {
         produtoResponse.setCategoria(categoriaResponse);
         return produtoResponse;
     }
+
+    @Transactional
+    public void uploadImagemProduto(long id, MultipartFile imagem) {
+
+        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+        String imagemOriginal = produtoEncontrado.get().getImagemPath();
+
+        if (produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, "Produto");
+        }
+
+        final String PATH_ARQUIVO_IMAGEM = PATH_PASTA_IMAGEM+imagem.getOriginalFilename();
+
+        if (imagemOriginal == null) {
+            imagemOriginal = PATH_ARQUIVO_IMAGEM;
+        }
+
+        produtoEncontrado.get().setImagemPath(PATH_ARQUIVO_IMAGEM);
+
+        try {
+            imagem.transferTo(new File(PATH_ARQUIVO_IMAGEM));
+            produtoRepository.save(produtoEncontrado.get());
+        } catch (IOException e) {
+            throw new ResourceInternalServerErrorException("Não foi possivel cadastrar a imagem ao produto");
+        }
+
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        logService.registrarLog(new Log(
+            Produto.class.getSimpleName(),
+            EnumTipoAlteracaoLog.UPDATE,
+            imagemOriginal,
+            PATH_ARQUIVO_IMAGEM,
+            usuario));
+    }   
 
     @Transactional
     public ProdutoResponseDTO alterarProduto(long id, ProdutoRequestDTO produtoRequest) {

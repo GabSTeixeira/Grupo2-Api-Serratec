@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.service.ProdutoService;
@@ -133,6 +136,27 @@ public class ProdutoController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
+
+    @PostMapping("/imagem/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+        summary = "upload imagem",
+        description = "faz o upload de uma imagem para um produto"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Imagem cadastrada no produto com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição"),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem autorização")
+    })
+    public ResponseEntity<?> uploadOne (@PathVariable long id, @RequestParam("imagem") MultipartFile imagem) {
+        produtoService.uploadImagemProduto(id, imagem);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

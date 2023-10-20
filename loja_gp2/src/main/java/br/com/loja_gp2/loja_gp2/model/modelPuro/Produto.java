@@ -31,9 +31,17 @@ public class Produto {
     private Categoria categoria;
     @Column(nullable = false)
     private boolean status;
+    @Column
+    private String imagemPath;
 
     //#endregion propriedades
     
+    public String getImagemPath() {
+        return imagemPath;
+    }
+    public void setImagemPath(String imagemPath) {
+        this.imagemPath = imagemPath;
+    }
     //#region getters and setters
     public long getId() {
         return id;

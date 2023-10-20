@@ -1,5 +1,6 @@
 package br.com.loja_gp2.loja_gp2.handler;
 
+import java.io.IOException;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
@@ -112,5 +113,15 @@ public class RestExceptionHandler {
         ErrorResposta erro = new ErrorResposta(403, "Forbidden", ex.getMessage(), data);
 
         return new ResponseEntity<>(erro, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResposta> handlerAccessDeniedException(IOException ex){
+
+        String data = ConversorData.converterDateParaDataHora(new Date());
+
+        ErrorResposta erro = new ErrorResposta(500, "Internal_Server_Error", ex.getMessage(), data);
+
+        return new ResponseEntity<>(erro, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
