@@ -26,6 +26,7 @@ import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 
 import br.com.loja_gp2.loja_gp2.repository.ProdutoRepository;
+import net.bytebuddy.implementation.bytecode.Throw;
 
 @Service
 public class ProdutoService {
@@ -128,7 +129,7 @@ public class ProdutoService {
 
         logService.registrarLog(new Log(
                     Produto.class.getSimpleName(),
-                    EnumTipoAlteracaoLog.UPDATE,
+                    EnumTipoAlteracaoLog.CREATE,
                     ObjetoToJson.conversor(produto),
                     ObjetoToJson.conversor(produto),
                     usuarioDummy));
@@ -166,7 +167,7 @@ public class ProdutoService {
         produto.setId(id);
         
         Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1l);
+        usuarioDummy.setId(2l);
 
         try {
             produto = produtoRepository.save(produto);
@@ -182,7 +183,17 @@ public class ProdutoService {
                     ObjetoToJson.conversor(produto),
                     usuarioDummy));
 
-        return modelMapper.map(produto, ProdutoResponseDTO.class);
+        ProdutoResponseDTO produtoResponse;
+
+        try {
+            produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
+        
+            produtoResponse.setCategoria(categoriaResponse);
+        } catch (Exception e) {
+            throw new ResourceBadRequestException("Deu erro aqui!");
+        }
+        
+        return produtoResponse;
 
     }
 
