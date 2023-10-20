@@ -60,6 +60,10 @@ public class ProdutoService {
             throw new ResourceNotFoundException(id, "produto");
         }
 
+        if(produtoEncontrado.get().isStatus() == false){
+            throw new ResourceBadRequestException("Este produto não está disponível");
+        }
+
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
     }
 

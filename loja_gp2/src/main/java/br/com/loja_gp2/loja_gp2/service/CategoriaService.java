@@ -50,6 +50,10 @@ public class CategoriaService {
         if(categoriaEncontrada.isEmpty()){
             throw new ResourceNotFoundException(id, "categoria");
         }
+        
+        if(categoriaEncontrada.get().isStatus() == false){
+            throw new ResourceBadRequestException("Esta categoria não está disponível");
+        }
 
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);
     }

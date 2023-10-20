@@ -58,7 +58,9 @@ public class EmailService {
         "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Caro "+usuario.getNome()+".</span></span></span></p>\r\n"+
         
         "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Data: "+ConversorData.converterDateParaDataHora(pedido.getDataPedido())+"<br/>Forma de pagamento: "+pedido.getFormaPagamento()+" </span></span></span></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Valor Total do Pedido: R$"+pedido.getValorLiquido()+"</span></span></span></p>\r\n"+
+        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Valor Bruto do Pedido: R$"+pedido.getValorBruto()+"</span></span></span></p>\r\n"+
+        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Valor Acréscimo Total: R$"+(pedido.getAcrescimoItens()+pedido.getAcrescimoPedido())+"      Valor Desconto Total: R$"+(pedido.getDescontoItens()+pedido.getDescontoPedido())+"</span></span></span></p>\r\n"+
+        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Valor Liquido do Pedido: R$"+pedido.getValorLiquido()+"</span></span></span></p>\r\n"+
         "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Obrigado por realizar uma compra em nossa loja.</span></span></span></p>\r\n"+
         "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Este email serve como confirma&ccedil;ao que sua compra de numero foi cadastrada e agora &eacute; so vc aguardar o envio de nossa loja.</span><br />\r\n"+
         "<span style=\"background-color:black\">Divirta-se!</span></span></span></p>\r\n"+ 
