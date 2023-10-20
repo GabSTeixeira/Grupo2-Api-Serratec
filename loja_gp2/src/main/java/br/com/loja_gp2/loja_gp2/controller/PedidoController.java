@@ -70,7 +70,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('CLIENTE')")
+    @PreAuthorize("hasAuthority('CLIENTE','ADMIN')")
     @Operation(
         summary = "Adicionar",
         description = "Esta requisição adiciona um pedido"

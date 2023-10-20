@@ -10,6 +10,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
@@ -27,7 +28,6 @@ import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 
 import br.com.loja_gp2.loja_gp2.repository.ProdutoRepository;
-import net.bytebuddy.implementation.bytecode.Throw;
 
 @Service
 public class ProdutoService {
@@ -118,8 +118,7 @@ public class ProdutoService {
             throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
         }
 
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+      Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
             produto = produtoRepository.save(produto);    
@@ -133,7 +132,7 @@ public class ProdutoService {
                     EnumTipoAlteracaoLog.CREATE,
                     ObjetoToJson.conversor(produto),
                     ObjetoToJson.conversor(produto),
-                    usuarioDummy));
+                    usuario));
 
         ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
         produtoResponse.setCategoria(categoriaResponse);
@@ -167,8 +166,7 @@ public class ProdutoService {
         produto.setStatus(produtoEncontrado.get().isStatus());
         produto.setId(id);
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(2l);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
             produto = produtoRepository.save(produto);
@@ -181,7 +179,7 @@ public class ProdutoService {
                     EnumTipoAlteracaoLog.UPDATE,
                     ObjetoToJson.conversor(produtoEncontrado.get()),
                     ObjetoToJson.conversor(produto),
-                    usuarioDummy));
+                    usuario));
 
         ProdutoResponseDTO produtoResponse = modelMapper.map(produto, ProdutoResponseDTO.class);
         
@@ -204,8 +202,7 @@ public class ProdutoService {
         Produto produtoOriginal = new Produto();
         Produto produtoAlterado = produtoEncontrado.get();
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         try {
             BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
@@ -221,7 +218,7 @@ public class ProdutoService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal),
                 ObjetoToJson.conversor(produtoAlterado),
-                usuarioDummy));
+                usuario));
     }
 
     @Transactional
@@ -236,8 +233,8 @@ public class ProdutoService {
         Produto produtoOriginal = new Produto();
         Produto produtoAlterado = produtoEncontrado.get();
         
-        Usuario usuarioDummy = new Usuario();
-        usuarioDummy.setId(1);
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         try {
             BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
             produtoAlterado.setStatus(true);
@@ -252,7 +249,7 @@ public class ProdutoService {
                 EnumTipoAlteracaoLog.UPDATE, 
                 ObjetoToJson.conversor(produtoOriginal), 
                 ObjetoToJson.conversor(produtoAlterado), 
-                usuarioDummy));
+                usuario));
     }
 
     public long verificarEstoque(long id) {
