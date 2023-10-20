@@ -145,6 +145,8 @@ public class UsuarioService {
             BeanUtils.copyProperties(usuarioEncontrado.get(), usuarioOriginal);
             BeanUtils.copyProperties(alteracaoUsuario, usuarioAlterado, "status","dataCadastro","listaLog","listaPedido");
             
+            usuarioAlterado.setSenha(passwordEncoder.encode(usuarioAlterado.getSenha()));
+
             usuarioAlterado = usuarioRepository.save(usuarioAlterado); //
 
             

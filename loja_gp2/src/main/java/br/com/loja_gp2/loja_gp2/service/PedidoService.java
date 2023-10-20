@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.loja_gp2.loja_gp2.common.ObjetoToJson;
@@ -80,10 +81,10 @@ public class PedidoService {
         // converte o pedido request pra pedido normal
         Pedido pedido = modelMapper.map(pedidoRequest, Pedido.class);
         
-        // busca o usuario para inserir no pedido
-        UsuarioResponseDTO usuarioEncontradoResponse = usuarioService.buscarUsuarioPorId(pedido.getUsuario().getId());
-        Usuario usuario = modelMapper.map(usuarioEncontradoResponse, Usuario.class);
-        
+       
+         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
         // define as informações do pedido
         pedido.setUsuario(usuario);
         pedido.setDataPedido(new Date());

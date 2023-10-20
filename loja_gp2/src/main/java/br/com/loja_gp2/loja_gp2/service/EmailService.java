@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import br.com.loja_gp2.loja_gp2.common.ConversorData;
 import br.com.loja_gp2.loja_gp2.model.Email.Email;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
+import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Pedido;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Usuario;
 
@@ -52,20 +53,20 @@ public class EmailService {
         List<String> destinatarios = new ArrayList<>();
         destinatarios.add(usuario.getEmail());
 
-        String mensagem = "<body style=\"background-color: #000000;\">\r\n" +
-        "<p><img alt=\"\" src=\"https://marketplace.canva.com/EAFDIxD2tZY/1/0/1600w/canva-logotipo-para-%C3%A1rea-de-tecnologia-e-games-ilustra%C3%A7%C3%A3o-e-sports-laranja-e-preto-8hlmOHD8SBs.jpg\" style=\"height:250px; margin-left:500px; margin-right:500px; width:250px\" /></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Pedido de número: "+pedido.getId()+"</span></span></span></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Caro "+usuario.getNome()+".</span></span></span></p>\r\n"+
-        
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Data: "+ConversorData.converterDateParaDataHora(pedido.getDataPedido())+"<br/>Forma de pagamento: "+pedido.getFormaPagamento()+" </span></span></span></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Valor Total do Pedido: R$"+pedido.getValorLiquido()+"</span></span></span></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Obrigado por realizar uma compra em nossa loja.</span></span></span></p>\r\n"+
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Este email serve como confirma&ccedil;ao que sua compra de numero foi cadastrada e agora &eacute; so vc aguardar o envio de nossa loja.</span><br />\r\n"+
-        "<span style=\"background-color:black\">Divirta-se!</span></span></span></p>\r\n"+ 
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Atenciosamente,</span><br />\r\n"+
-        "<span style=\"background-color:#000000\"> A loja Espa&ccedil;o dos Games</span></span></span></p>\r\n"+
-        "</body>";
+        String mensagem = new String();
 
+        mensagem.concat("<body>");
+        
+        mensagem.concat("<table border=1>");
+        mensagem.concat("<tr><th>Nome</th><th>Quantidade</th><th>Valor</th>");
+        
+        for (Item item :  pedido.getListaItens()) {     
+            mensagem.concat("<tr><td>"+item.getProduto().getNome()+"</td>");
+            mensagem.concat("<td>"+item.getQuantidade()+"</td>");
+            mensagem.concat("<td>"+item.getValorLiquido()+"</td></tr>");
+        }
+
+        mensagem.concat("</table></body>");
 
         Email email = new Email(ASSUNTO, mensagem, DADO+"@EspacoDosGames.com", destinatarios);
 
@@ -79,20 +80,36 @@ public class EmailService {
         final String DADO = "Cadastro";
         final String ASSUNTO = "Confirmação de cadastro";
         
-        String mensagem = "<body style=\"background-color: #000000;\">\r\n" +
-        "<p><img alt=\"\" src=\"https://marketplace.canva.com/EAFDIxD2tZY/1/0/1600w/canva-logotipo-para-%C3%A1rea-de-tecnologia-e-games-ilustra%C3%A7%C3%A3o-e-sports-laranja-e-preto-8hlmOHD8SBs.jpg\" style=\"height:250px; margin-left:500px; margin-right:500px; width:250px\" /></p>\r\n" +
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Caro "+usuario.getNome()+".</span></span></span></p>\r\n" +
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Obrigado por realizar uma compra em nossa loja.</span></span></span></p>\r\n" +
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Este email serve como confirma&ccedil;ao que sua compra foi cadastrada e agora &eacute; so vc aguardar o envio de nossa loja.</span><br />\r\n" +
-        "<span style=\"background-color:black\">Divirta-se!</span></span></span></p>\r\n" +
-        "<p><span style=\"color:#ffffff\"><span style=\"font-size:20px\"><span style=\"background-color:#000000\"> Atenciosamente,</span><br />\r\n" +
-        "<span style=\"background-color:#000000\"> A loja Espa&ccedil;o dos Games</span></span></span></p>\r\n" +
-        "</body>";
+        final String MENSAGEM = ""
+        .concat("<body>")
+        .concat("<p style=\"text-align:center\">")
+        .concat("<img alt=\"\" src=\"https://i.imgur.com/4E5yT11.png\" style=\"height:275px; width:1200px\" /></p>")
+        
+        .concat("<h1 style=\"text-align:center\">")
+        .concat("<span style=\"color:#000000\"><span style=\"font-family:Times New Roman,Times,serif\">Bem Vindo "+usuario.getNome()+" ao Espa&ccedil;o dos Games!</span></span></h1>")
+        .concat("<p style=\"text-align:center\"><span style=\"font-size:16px\">")
+        .concat("<span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("Na nossa loja voc&ecirc; encontrar&aacute; os melhores produtos para acrescentar a sua cole&ccedil;&atilde;o e se divertir ao m&aacute;ximo!</span></span></p>")
+        
+        .concat("<p style=\"text-align:center\"><span style=\"font-size:16px\"><span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("N&oacute;s temos desde jogos vintage at&eacute; os mais famosos no momento!</span></span></p>")
+
+        .concat("<p style=\"text-align:center\"><span style=\"font-size:16px\"><span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("N&atilde;o perca tempo e aproveite todos os novos descontos imperd&iacute;veis na nossa loja!</span></span></p>")
+
+        .concat("<p style=\"text-align:center\"><span style=\"font-size:16px\"><span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("Comece agora uma nova jornada no maravilhoso mundo dos jogos!</span></span></p>")
+
+        .concat("<h2 style=\"text-align:center\"><span style=\"color:#000000\"><span style=\"font-family:Times New Roman,Times,serif\">")
+        .concat("Esperamos o seu Pedido!</span></span></h2>")
+
+        .concat("</body>");
+
 
         List<String> destinatarios = new ArrayList<>();
         destinatarios.add(usuario.getEmail());
 
-        Email email = new Email(ASSUNTO, mensagem, DADO+"@EspacoDosGames.com", destinatarios);
+        Email email = new Email(ASSUNTO, MENSAGEM, DADO+"@EspacoDosGames.com", destinatarios);
 
         enviar(email);    
     }

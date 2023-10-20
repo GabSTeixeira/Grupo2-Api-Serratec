@@ -139,7 +139,12 @@ public class ProdutoService {
 
         Produto produto = modelMapper.map(produtoRequest, Produto.class);
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-  
+        
+        CategoriaResponseDTO categoriaResponse;
+        
+        categoriaResponse = categoriaService.buscarCategoriaPorId(produto.getCategoria().getId());
+
+
         if (produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
         }
@@ -147,6 +152,12 @@ public class ProdutoService {
         if (produto.getEstoque() < 0) {
             throw new ResourceBadRequestException(Produto.class.getSimpleName(), "Verifique o campo estoque");
         }
+
+        if(categoriaResponse.isStatus() == false) {
+            throw new ResourceBadRequestException("Categoria", "Categoria não esta disponivel para o produto");
+        }
+        
+        
         produto.setStatus(produtoEncontrado.get().isStatus());
         produto.setId(id);
         
