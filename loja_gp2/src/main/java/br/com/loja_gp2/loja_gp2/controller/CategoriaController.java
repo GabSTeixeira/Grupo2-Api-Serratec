@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
     
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todas as categorias",
         description = "Esta requisição obtem todas as categorias"
@@ -82,6 +84,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/inativas")  
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todas as inativas",
         description = "Esta requisição busca todas as categorias inativas"
@@ -100,6 +103,7 @@ public class CategoriaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Adicionar",
         description = "Esta requisição adiciona uma categoria"
@@ -119,6 +123,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
         description = "Esta requisição atualiza a categoria por id"
@@ -138,6 +143,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/desativar/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
         description = "Esta requisição desativa a categoria por id"
@@ -157,6 +163,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/ativar/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",
         description = "Esta requisição ativa a categoria por id"

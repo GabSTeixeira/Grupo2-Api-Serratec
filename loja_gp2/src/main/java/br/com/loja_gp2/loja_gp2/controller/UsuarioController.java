@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os usuarios",
         description = "Esta requisição obtem todos os usuários"
@@ -51,6 +53,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Obtem por id",
         description = "Esta requisição obtem o usuário por id"
@@ -71,6 +74,7 @@ public class UsuarioController {
     }
     
     @GetMapping ("/ativos")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os ativos",
         description = "Esta requisição busca todos usuários ativos"
@@ -89,6 +93,7 @@ public class UsuarioController {
     }
     
     @GetMapping ("/inativos")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os inativos",
         description = "Esta requisição busca todos usuários inativos"
@@ -124,6 +129,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
         description = "Esta requisição atualiza o usuário por id"
@@ -144,6 +150,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/desativar/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
         description = "Esta requisição desativa o usuários por id"
@@ -162,6 +169,7 @@ public class UsuarioController {
     }
     
     @PutMapping("/ativar/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",
         description = "Esta requisição ativa o usuário por id"

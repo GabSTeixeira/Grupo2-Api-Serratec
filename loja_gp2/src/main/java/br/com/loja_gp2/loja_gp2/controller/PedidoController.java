@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os pedidos",
         description = "Esta requisição obtem todos os pedidos"
@@ -46,6 +48,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Obtem por id",
         description = "Esta requisição obtem o pedido por id"
@@ -65,6 +68,7 @@ public class PedidoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CLIENTE')")
     @Operation(
         summary = "Adicionar",
         description = "Esta requisição adiciona um pedido"

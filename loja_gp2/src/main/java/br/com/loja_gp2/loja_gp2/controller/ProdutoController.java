@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os produtos",
         description = "Esta requisição obtem todos os produtos"
@@ -97,6 +99,7 @@ public class ProdutoController {
 
 
     @GetMapping("/inativas")  
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os inativos",
         description = "Esta requisição busca todos produtos inativos"
@@ -115,6 +118,7 @@ public class ProdutoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Adicionar",
         description = "Esta requisição adiciona um produto"
@@ -133,6 +137,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
         description = "Esta requisição atualiza o produto por id"
@@ -153,6 +158,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/desativar/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
         description = "Esta requisição desativa o produto por id"
@@ -171,6 +177,7 @@ public class ProdutoController {
     }
 
      @PutMapping("/ativar/{id}")
+     @PreAuthorize("hasAuthority('ADMIN')")
      @Operation(
         summary = "Ativa por id",
         description = "Esta requisição ativa o produto por id"
