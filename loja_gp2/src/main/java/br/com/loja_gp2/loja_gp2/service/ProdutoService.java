@@ -2,7 +2,10 @@ package br.com.loja_gp2.loja_gp2.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,36 +149,63 @@ public class ProdutoService {
 
     @Transactional
     public void uploadImagemProduto(long id, MultipartFile imagem) {
-
+        
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-        String imagemOriginal = produtoEncontrado.get().getImagemPath();
-
+        
         if (produtoEncontrado.isEmpty()) {
             throw new ResourceNotFoundException(id, "Produto");
         }
-
-        final String PATH_ARQUIVO_IMAGEM = PATH_PASTA_IMAGEM+imagem.getOriginalFilename();
-
-        if (imagemOriginal == null) {
-            imagemOriginal = PATH_ARQUIVO_IMAGEM;
+        
+        String imagemOriginal = produtoEncontrado.get().getImagemPath();
+        String novoNomeImagem;
+        
+        // .jpg .png
+        String imagemType = imagem.getOriginalFilename().substring(imagem.getOriginalFilename().lastIndexOf('.'));
+        
+        if (imagemOriginal != null) {
+            
+            // serial unico para o produto
+            int serial = Integer.parseInt(imagemOriginal.substring(0, imagemOriginal.indexOf("i")));
+            
+            // montagem do novo nome da imagem serial+imagemProduto+id+nomeProduto+tipoImagem
+            novoNomeImagem = (serial+1) + "imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
+        } else {
+            novoNomeImagem = "1imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
         }
 
-        produtoEncontrado.get().setImagemPath(PATH_ARQUIVO_IMAGEM);
-
+        
+        // montagem do path inteiro da imagem
+        String PATH_ARQUIVO_IMAGEM = PATH_PASTA_IMAGEM + novoNomeImagem;
+           
+        Produto produtoOriginal = new Produto();
+        Produto produtoAlterado = produtoEncontrado.get();
+        
         try {
-            imagem.transferTo(new File(PATH_ARQUIVO_IMAGEM));
-            produtoRepository.save(produtoEncontrado.get());
+            BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
+            produtoAlterado.setImagemPath(novoNomeImagem);
+
+            byte[] bytes = imagem.getBytes();
+            
+            // cria um novo arquivo com o nome correto e com o conteudo do multiPartFile
+            Files.write(Paths.get(PATH_ARQUIVO_IMAGEM), bytes, StandardOpenOption.CREATE_NEW);
+            produtoAlterado = produtoRepository.save(produtoAlterado);
+            
+            // deleta a imagem antiga
+            if (new File(PATH_PASTA_IMAGEM+imagemOriginal).exists()) {        
+                new File(PATH_PASTA_IMAGEM+imagemOriginal).delete();
+            }
+            
         } catch (IOException e) {
             throw new ResourceInternalServerErrorException("Não foi possivel cadastrar a imagem ao produto");
         }
-
+        
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
         logService.registrarLog(new Log(
             Produto.class.getSimpleName(),
             EnumTipoAlteracaoLog.UPDATE,
-            imagemOriginal,
-            PATH_ARQUIVO_IMAGEM,
+            ObjetoToJson.conversor(produtoOriginal),
+            ObjetoToJson.conversor(produtoAlterado),
             usuario));
     }   
 
