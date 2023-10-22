@@ -53,10 +53,10 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Obtem por id",
-        description = "Esta requisição obtem o usuário por id"
+        description = "Esta requisição obtem o usuário por id, um cliente pode buscar seu proprio usuario pelo seu proprio id, porém apenas isso"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario encontrado com sucesso"),

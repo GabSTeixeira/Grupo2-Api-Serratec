@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import br.com.loja_gp2.loja_gp2.dto.ItemDTO.ItemResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.PedidoDTO.PedidoResponseDTO;
-
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
@@ -52,8 +52,12 @@ public class PedidoService {
     public PedidoResponseDTO buscarPedidoPorId(long id){
         Optional<Pedido> pedidoEncontrado = pedidoRepository.findById(id);
 
-        if(pedidoEncontrado.isEmpty()){
-            throw new ResourceNotFoundException(id, "pedido");
+
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // verifica se o pedido existe ou se o pedido é do cliente que esta o solicitando, caso não dispara uma exception
+        if(pedidoEncontrado.isEmpty() || (usuario.getPerfil().compareTo(EnumTipoPerfil.CLIENTE) == 0 && pedidoEncontrado.get().getUsuario().getId() != usuario.getId())){
+            throw new ResourceNotFoundException(id, Pedido.class.getSimpleName());
         }
 
         return modelMapper.map(pedidoEncontrado.get(), PedidoResponseDTO.class);
@@ -85,23 +89,22 @@ public class PedidoService {
         
         List<ItemResponseDTO> listaItensResponse;
         
+        // verifica se é possivel a venda destes itens e transfere pra uma lista normal
+        List<Item> itensParaCalculo = itemService.atualizarListaItens(pedidoRequest);
+        
+        // verifica se não tem nada negativo e calcula os totais individuais dos itens
+        itensParaCalculo.forEach(i -> i.calcularValorTotal());
+        
+        // define a lista atualizada e depois calcula as informações do pedido
+        pedido.setListaItens(itensParaCalculo);
+        pedido.calcularTotais();
+        
         try {  
             
-            // calcula todas as informações individuais dos itens
-            List<Item> itensParaCalculo = itemService.atualizarListaItens(pedidoRequest);
-            
-            // verifica se não tem nada negativo e calcula os totais individuais dos itens
-            itensParaCalculo.forEach(i -> i.calcularValorTotal());
-            
-            // define a lista atualizada e depois calcula as informações do pedido
-            pedido.setListaItens(itensParaCalculo);
-            pedido.calcularTotais();
-
             // salva o pedido e os itens deste pedido nas devidas tabelas
             pedido = pedidoRepository.save(pedido); 
             listaItensResponse = itemService.cadastrarItensPedido(pedido);
-        
-            
+                    
         } catch (Exception e) {
             throw new ResourceBadRequestException(Pedido.class.getSimpleName(), "Não foi possivel cadastrar o pedido");
         }

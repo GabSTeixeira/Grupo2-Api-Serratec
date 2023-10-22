@@ -49,10 +49,10 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Obtem por id",
-        description = "Esta requisição obtem o pedido por id"
+        description = "Esta requisição obtem o pedido por id, um cliente pode buscar um pedido por id se este pedido pertencer a ele"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido encontrado com sucesso"),
@@ -70,7 +70,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('CLIENTE','ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Adicionar",
         description = "Esta requisição adiciona um pedido"

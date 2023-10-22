@@ -77,7 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()// informo que todos podem acessar esses endpoints sem autenticação.
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/api/categoria", "/api/produto/ativos", "/api/produto/categoria/{id}", "/api/produto/{id}", "/api/categoria/{id}")
+            .antMatchers(HttpMethod.GET, "/api/categoria","/api/produto/ativos", "/api/produto/imagem/{id}", "/api/produto/categoria/{id}", "/api/produto/{id}", "/api/categoria/{id}")
             .permitAll()
             .anyRequest()
             // .permitAll();

@@ -48,12 +48,8 @@ public class CategoriaService {
     public CategoriaResponseDTO buscarCategoriaPorId(Long id) {
         Optional<Categoria> categoriaEncontrada = categoriaRepository.findById(id);
         
-        if(categoriaEncontrada.isEmpty()){
+        if(categoriaEncontrada.isEmpty() || categoriaEncontrada.get().isStatus() == false){
             throw new ResourceNotFoundException(id, "categoria");
-        }
-        
-        if(categoriaEncontrada.get().isStatus() == false){
-            throw new ResourceBadRequestException("Esta categoria não está disponível");
         }
 
         return modelMapper.map(categoriaEncontrada.get(), CategoriaResponseDTO.class);

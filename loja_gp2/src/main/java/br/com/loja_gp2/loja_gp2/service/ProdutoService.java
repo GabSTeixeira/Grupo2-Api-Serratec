@@ -25,6 +25,7 @@ import br.com.loja_gp2.loja_gp2.dto.CategoriaDTO.CategoriaResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.ProdutoDTO.ProdutoResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
@@ -66,12 +67,9 @@ public class ProdutoService {
     public ProdutoResponseDTO buscarProdutoPorId(Long id) {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
-        if (produtoEncontrado.isEmpty()) {
+        
+        if (produtoEncontrado.isEmpty() || produtoEncontrado.get().isStatus() == false) {
             throw new ResourceNotFoundException(id, "produto");
-        }
-
-        if(produtoEncontrado.get().isStatus() == false){
-            throw new ResourceBadRequestException("Este produto não está disponível");
         }
 
         return modelMapper.map(produtoEncontrado.get(), ProdutoResponseDTO.class);
@@ -100,12 +98,126 @@ public class ProdutoService {
         
         Categoria categoria = modelMapper.map(categoriaEncontrada, Categoria.class);
            
-        List<Produto> produtosEncontrados = produtoRepository.findAllByCategoria(categoria);
+        List<Produto> produtosEncontrados = produtoRepository.findAllByCategoriaAndStatusTrue(categoria);
 
         List<ProdutoResponseDTO> listaProdutoResponse = produtosEncontrados.stream().map(p -> modelMapper.map(p, ProdutoResponseDTO.class)).collect(Collectors.toList());
 
         return listaProdutoResponse;
     }
+
+
+    public byte[] downloadImagemProduto (long id) {
+
+        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+        
+        Object possivelUsuario = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        
+        if (produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
+        }
+        
+        // basicamente permite apenas que usuarios logados admin consigam baixar imagem de produtos inativos
+        if (produtoEncontrado.get().isStatus() == false) {
+            if (!possivelUsuario.equals("anonymousUser")) {
+                
+                Usuario usuario = (Usuario) possivelUsuario; 
+                
+                if (usuario.getPerfil().compareTo(EnumTipoPerfil.CLIENTE) == 0) {
+                    throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
+                }
+            } else {
+                throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
+            }
+        }
+        
+
+        if (produtoEncontrado.get().getImagemPath() == null) {
+            throw new ResourceNotFoundException("Não foi possivel encontrar a imagem deste produto");
+        }
+
+        byte[] imagem;
+
+        try {
+            imagem = Files.readAllBytes(new File(PATH_PASTA_IMAGEM+produtoEncontrado.get().getImagemPath()).toPath());
+
+        } catch (Exception e) {
+            throw new ResourceInternalServerErrorException("Um problema ocorreu durante o download da imagem");
+        }
+
+        return imagem;
+    }
+
+    @Transactional
+    public void uploadImagemProduto(long id, MultipartFile imagem) {
+        
+        // obriga a passar o arquivo do tipo png ou jpeg
+        if (!imagem.getContentType().equalsIgnoreCase("image/png") && 
+            !imagem.getContentType().equalsIgnoreCase("image/jpeg")) {
+
+            throw new ResourceBadRequestException("Por favor mande uma imagem do tipo jpeg ou png");
+        }
+
+
+        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
+        
+        if (produtoEncontrado.isEmpty()) {
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
+        }
+        
+        String imagemOriginal = produtoEncontrado.get().getImagemPath();
+        String novoNomeImagem;
+        
+        // .jpg .png etc
+        String imagemType = imagem.getOriginalFilename().substring(imagem.getOriginalFilename().lastIndexOf('.'));
+        
+
+        // se tiver registro de imagem no banco e de fato a imagem existir faça
+        if (imagemOriginal != null && new File(PATH_PASTA_IMAGEM+imagemOriginal).exists()) {
+            
+            // serial unico para o produto
+            int serial = Integer.parseInt(imagemOriginal.substring(0, imagemOriginal.indexOf("i")));
+            
+            // montagem do novo nome da imagem serial+imagemProduto+id+nomeProduto+tipoImagem
+            novoNomeImagem = (serial+1) + "imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
+        } else {
+            novoNomeImagem = "1imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
+        }
+
+        // montagem do path inteiro da imagem
+        String PATH_ARQUIVO_IMAGEM = PATH_PASTA_IMAGEM + novoNomeImagem;
+           
+        Produto produtoOriginal = new Produto();
+        Produto produtoAlterado = produtoEncontrado.get();
+        
+        try {
+            BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
+            produtoAlterado.setImagemPath(novoNomeImagem);
+
+            byte[] bytes = imagem.getBytes();
+            
+            // cria um novo arquivo com o nome correto e com o conteudo do multiPartFile
+            Files.write(Paths.get(PATH_ARQUIVO_IMAGEM), bytes, StandardOpenOption.CREATE_NEW);
+            produtoAlterado = produtoRepository.save(produtoAlterado);
+            
+            // deleta a imagem antiga
+            if (new File(PATH_PASTA_IMAGEM+imagemOriginal).exists()) {        
+                new File(PATH_PASTA_IMAGEM+imagemOriginal).delete();
+            }
+            
+        } catch (IOException e) {
+            throw new ResourceInternalServerErrorException("Não foi possivel cadastrar a imagem ao produto");
+        }
+        
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        logService.registrarLog(new Log(
+            Produto.class.getSimpleName(),
+            EnumTipoAlteracaoLog.UPDATE,
+            ObjetoToJson.conversor(produtoOriginal),
+            ObjetoToJson.conversor(produtoAlterado),
+            usuario));
+    }   
 
     public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoRequest) {
 
@@ -148,68 +260,6 @@ public class ProdutoService {
     }
 
     @Transactional
-    public void uploadImagemProduto(long id, MultipartFile imagem) {
-        
-        Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
-        
-        if (produtoEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "Produto");
-        }
-        
-        String imagemOriginal = produtoEncontrado.get().getImagemPath();
-        String novoNomeImagem;
-        
-        // .jpg .png
-        String imagemType = imagem.getOriginalFilename().substring(imagem.getOriginalFilename().lastIndexOf('.'));
-        
-        if (imagemOriginal != null) {
-            
-            // serial unico para o produto
-            int serial = Integer.parseInt(imagemOriginal.substring(0, imagemOriginal.indexOf("i")));
-            
-            // montagem do novo nome da imagem serial+imagemProduto+id+nomeProduto+tipoImagem
-            novoNomeImagem = (serial+1) + "imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
-        } else {
-            novoNomeImagem = "1imagemProduto" + produtoEncontrado.get().getId() + produtoEncontrado.get().getNome()+imagemType;
-        }
-
-        
-        // montagem do path inteiro da imagem
-        String PATH_ARQUIVO_IMAGEM = PATH_PASTA_IMAGEM + novoNomeImagem;
-           
-        Produto produtoOriginal = new Produto();
-        Produto produtoAlterado = produtoEncontrado.get();
-        
-        try {
-            BeanUtils.copyProperties(produtoEncontrado.get(), produtoOriginal);
-            produtoAlterado.setImagemPath(novoNomeImagem);
-
-            byte[] bytes = imagem.getBytes();
-            
-            // cria um novo arquivo com o nome correto e com o conteudo do multiPartFile
-            Files.write(Paths.get(PATH_ARQUIVO_IMAGEM), bytes, StandardOpenOption.CREATE_NEW);
-            produtoAlterado = produtoRepository.save(produtoAlterado);
-            
-            // deleta a imagem antiga
-            if (new File(PATH_PASTA_IMAGEM+imagemOriginal).exists()) {        
-                new File(PATH_PASTA_IMAGEM+imagemOriginal).delete();
-            }
-            
-        } catch (IOException e) {
-            throw new ResourceInternalServerErrorException("Não foi possivel cadastrar a imagem ao produto");
-        }
-        
-        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
-        logService.registrarLog(new Log(
-            Produto.class.getSimpleName(),
-            EnumTipoAlteracaoLog.UPDATE,
-            ObjetoToJson.conversor(produtoOriginal),
-            ObjetoToJson.conversor(produtoAlterado),
-            usuario));
-    }   
-
-    @Transactional
     public ProdutoResponseDTO alterarProduto(long id, ProdutoRequestDTO produtoRequest) {
 
         Produto produto = modelMapper.map(produtoRequest, Produto.class);
@@ -229,7 +279,7 @@ public class ProdutoService {
         }
 
         if(categoriaResponse.isStatus() == false) {
-            throw new ResourceBadRequestException("Categoria", "Categoria não esta disponivel para o produto");
+            throw new ResourceBadRequestException(Produto.class.getSimpleName(), "Categoria, ele pode não estar disponivel");
         }
         
         
@@ -241,7 +291,7 @@ public class ProdutoService {
         try {
             produto = produtoRepository.save(produto);
         } catch (Exception e) {
-            throw new ResourceBadRequestException("nao foi possivel cadastrar o produto");
+            throw new ResourceBadRequestException("Nao foi possivel cadastrar o produto");
         }
 
         logService.registrarLog(new Log(
@@ -265,7 +315,7 @@ public class ProdutoService {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
         if(produtoEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "categoria");
+            throw new ResourceNotFoundException(id, Categoria.class.getSimpleName());
         }
 
         
@@ -297,7 +347,7 @@ public class ProdutoService {
          Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
         if(produtoEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "categoria");
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
         }
         
         Produto produtoOriginal = new Produto();
@@ -326,7 +376,7 @@ public class ProdutoService {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
         if (produtoEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "produto");
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
         }
 
         return produtoEncontrado.get().getEstoque();
@@ -336,11 +386,11 @@ public class ProdutoService {
         Optional<Produto> produtoEncontrado = produtoRepository.findById(id);
 
         if (produtoEncontrado.isEmpty()) {
-            throw new ResourceNotFoundException(id, "produto");
+            throw new ResourceNotFoundException(id, Produto.class.getSimpleName());
         }
 
         if (quantidade > produtoEncontrado.get().getEstoque()) {
-            throw new ResourceBadRequestException("Produto", "Verifique o campo estoque");
+            throw new ResourceBadRequestException(Produto.class.getSimpleName(), "Verifique o campo estoque");
         }
 
         Produto produto = produtoEncontrado.get();

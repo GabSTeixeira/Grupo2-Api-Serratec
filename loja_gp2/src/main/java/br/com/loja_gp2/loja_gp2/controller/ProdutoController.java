@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,6 +99,24 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(listaProdutosAtivos);
     }
 
+    @GetMapping("/imagem/{id}")
+    @Operation(
+        summary = "download imagem",
+        description = "faz o download de uma imagem de um produto, caso o usuario que fez a requisição for um cliente, apenas produtos ativos serão levados em consideração"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Imagem cadastrada no produto com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Problema com a requisição"),
+        @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+        @ApiResponse(responseCode = "401", description = "O usuário não esta autenticado"),
+        @ApiResponse(responseCode = "500", description = "Um problema ocorreu durante um processo de requisição")
+    })
+    public ResponseEntity<?> downloadOne (@PathVariable long id) {
+
+        byte[] imagemResponse = produtoService.downloadImagemProduto(id);
+
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(imagemResponse);
+    }
 
     @GetMapping("/inativas")  
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -156,7 +175,6 @@ public class ProdutoController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

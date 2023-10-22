@@ -23,6 +23,7 @@ import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioLoginResponseDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioRequestDTO;
 import br.com.loja_gp2.loja_gp2.dto.UsuarioDTO.UsuarioResponseDTO;
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoAlteracaoLog;
+import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPerfil;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceBadRequestException;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceNotFoundException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Log;
@@ -72,7 +73,9 @@ public class UsuarioService {
 
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
-        if (usuarioEncontrado.isEmpty()) {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (usuarioEncontrado.isEmpty() || (usuario.getPerfil().compareTo(EnumTipoPerfil.CLIENTE) == 0 && usuarioEncontrado.get().getId() != usuario.getId())) {
             throw new ResourceNotFoundException(id, "usuario");
         }
 
