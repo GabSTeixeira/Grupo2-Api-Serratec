@@ -39,6 +39,10 @@ public class PedidoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Delega uma busca de uma lista com todos os pedidos dentro do banco de dados para o Repository.
+     * @return Uma lista de PedidoResponseDTO
+     */
     public List<PedidoResponseDTO> buscarTodosPedidos() {
 
         List<Pedido> listaPedido = pedidoRepository.findAll();
@@ -49,6 +53,11 @@ public class PedidoService {
         return listaPedidoResponse;
     }
 
+    /**
+     * Delega uma busca de um pedido por id no banco de dados para o Repository.
+     * @param id
+     * @return Uma PedidoResponseDTO
+     */
     public PedidoResponseDTO buscarPedidoPorId(long id){
         Optional<Pedido> pedidoEncontrado = pedidoRepository.findById(id);
 
@@ -63,7 +72,10 @@ public class PedidoService {
         return modelMapper.map(pedidoEncontrado.get(), PedidoResponseDTO.class);
     }
 
-
+    /**
+     * Delega um cadastro de um pedido no bando de dados para o Repository.
+     * @return Um PedidoResponseDTO
+     */
     @Transactional
     public PedidoResponseDTO cadastrarPedido (PedidoRequestDTO pedidoRequest) {
 

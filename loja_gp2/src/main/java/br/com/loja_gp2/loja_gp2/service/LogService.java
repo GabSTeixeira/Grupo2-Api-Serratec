@@ -13,6 +13,10 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
+    /**
+     * Delega um registro de um Log/auditoria no banco de dados para o Repository.
+     * @param log
+     */
     public void registrarLog (Log log) {
         try {
             logRepository.save(log);
