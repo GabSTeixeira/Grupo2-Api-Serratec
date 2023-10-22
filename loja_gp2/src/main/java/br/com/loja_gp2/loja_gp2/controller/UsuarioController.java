@@ -23,6 +23,7 @@ import br.com.loja_gp2.loja_gp2.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @CrossOrigin("*")
@@ -36,6 +37,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os usuarios",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem todos os usuários"
     )
 
@@ -56,6 +58,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Obtem por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem o usuário por id, um cliente pode buscar seu proprio usuario pelo seu proprio id, porém apenas isso"
     )
     @ApiResponses({
@@ -77,6 +80,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os ativos",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição busca todos usuários ativos"
     )
     @ApiResponses({
@@ -96,6 +100,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os inativos",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição busca todos usuários inativos"
     )
     @ApiResponses({
@@ -132,6 +137,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição atualiza o usuário por id"
     )
     @ApiResponses({
@@ -153,6 +159,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição desativa o usuários por id"
     )
     @ApiResponses({
@@ -172,6 +179,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição ativa o usuário por id"
     )
     @ApiResponses({

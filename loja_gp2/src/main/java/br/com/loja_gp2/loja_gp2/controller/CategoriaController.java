@@ -20,6 +20,7 @@ import br.com.loja_gp2.loja_gp2.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/categoria")
@@ -32,6 +33,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todas as categorias",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem todas as categorias"
     )
     @ApiResponses({
@@ -85,6 +87,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todas as inativas",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição busca todas as categorias inativas"
     )
     @ApiResponses({
@@ -104,6 +107,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Adicionar",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição adiciona uma categoria"
     )
     @ApiResponses({
@@ -124,6 +128,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição atualiza a categoria por id"
     )
     @ApiResponses({
@@ -144,6 +149,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição desativa a categoria por id"
     )
     @ApiResponses({
@@ -164,6 +170,7 @@ public class CategoriaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição ativa a categoria por id"
     )
     @ApiResponses({

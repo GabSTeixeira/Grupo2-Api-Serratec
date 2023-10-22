@@ -19,6 +19,7 @@ import br.com.loja_gp2.loja_gp2.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -31,6 +32,7 @@ public class PedidoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os pedidos",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem todos os pedidos"
     )
     @ApiResponses({
@@ -52,6 +54,7 @@ public class PedidoController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Obtem por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem o pedido por id, um cliente pode buscar um pedido por id se este pedido pertencer a ele"
     )
     @ApiResponses({
@@ -73,6 +76,7 @@ public class PedidoController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENTE')")
     @Operation(
         summary = "Adicionar",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição adiciona um pedido"
     )
     @ApiResponses({

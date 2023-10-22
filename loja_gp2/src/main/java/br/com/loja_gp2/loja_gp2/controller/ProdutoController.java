@@ -23,6 +23,7 @@ import br.com.loja_gp2.loja_gp2.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 @RestController
@@ -36,6 +37,7 @@ public class ProdutoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os produtos",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição obtem todos os produtos"
     )
      @ApiResponses({
@@ -74,7 +76,7 @@ public class ProdutoController {
     @GetMapping("/categoria/{id}")
     @Operation(
         summary = "Obtem por id",
-        description = "Esta requisição obtem o produto por id"
+        description = "Esta requisição obtem todos os produtos ativos por id de uma categoria"
     )
     public ResponseEntity<List<ProdutoResponseDTO>> findByCategoria(@PathVariable Long id) {
 
@@ -102,7 +104,7 @@ public class ProdutoController {
     @GetMapping("/imagem/{id}")
     @Operation(
         summary = "download imagem",
-        description = "faz o download de uma imagem de um produto, caso o usuario que fez a requisição for um cliente, apenas produtos ativos serão levados em consideração"
+        description = "faz o download de uma imagem de um produto, caso o usuario que fez a requisição for um cliente ou anonimo, apenas produtos ativos serão levados em consideração"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Imagem cadastrada no produto com sucesso"),
@@ -122,6 +124,7 @@ public class ProdutoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Retorna todos os inativos",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição busca todos produtos inativos"
     )
     @ApiResponses({
@@ -141,6 +144,7 @@ public class ProdutoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Adicionar",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição adiciona um produto"
     )
     @ApiResponses({
@@ -156,10 +160,11 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
-    @PostMapping("/imagem/{id}")
+    @PostMapping(path = "/imagem/{id}", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "upload imagem",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "faz o upload de uma imagem para um produto"
     )
     @ApiResponses({
@@ -180,6 +185,7 @@ public class ProdutoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Atualizar por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição atualiza o produto por id"
     )
     @ApiResponses({
@@ -201,6 +207,7 @@ public class ProdutoController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição desativa o produto por id"
     )
     @ApiResponses({
@@ -220,6 +227,7 @@ public class ProdutoController {
      @PreAuthorize("hasAuthority('ADMIN')")
      @Operation(
         summary = "Ativa por id",
+        security = @SecurityRequirement(name = "autenticacaoBearer"),
         description = "Esta requisição ativa o produto por id"
     )
      @ApiResponses({
