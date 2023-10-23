@@ -1,7 +1,6 @@
 package br.com.loja_gp2.loja_gp2.security;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;

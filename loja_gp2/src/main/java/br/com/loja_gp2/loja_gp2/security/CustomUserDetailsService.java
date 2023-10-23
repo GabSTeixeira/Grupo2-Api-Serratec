@@ -16,7 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Metodo que vai obter dinamicamente o usuario no banco pelo username, que np nosso caso é o e-mail.
+        // Metodo que vai obter dinamicamente o usuario no banco pelo username, que no nosso caso é o e-mail.
         return usuarioRepository.findByEmail(username).get();
     }
 

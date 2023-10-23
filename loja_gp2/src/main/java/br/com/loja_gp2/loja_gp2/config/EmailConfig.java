@@ -16,7 +16,11 @@ public class EmailConfig {
     
     @Autowired
     private Environment env;
-
+    
+    /**
+     * Método feito para que o Spring enxergue o JavaMailSenderImpl sem a necessidade de instanciá-lo.
+     * @return Um objeto instanciado do tipo JavaMailSenderImpl
+     */
     @Bean
     public JavaMailSender mailSender(){
 
