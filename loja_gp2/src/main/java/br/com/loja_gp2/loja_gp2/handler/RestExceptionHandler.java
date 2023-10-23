@@ -3,7 +3,6 @@ package br.com.loja_gp2.loja_gp2.handler;
 import java.io.IOException;
 import java.util.Date;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

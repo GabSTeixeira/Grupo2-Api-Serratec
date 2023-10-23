@@ -10,7 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import br.com.loja_gp2.loja_gp2.common.ConversorData;
 import br.com.loja_gp2.loja_gp2.model.Email.Email;
 import br.com.loja_gp2.loja_gp2.model.exceptions.ResourceInternalServerErrorException;
 import br.com.loja_gp2.loja_gp2.model.modelPuro.Item;
@@ -46,8 +45,6 @@ public class EmailService {
         } catch (Exception e) {
             throw new ResourceInternalServerErrorException("Ocorreu um erro durante o envio de um email");
         }
-    
-    
     }
 
     /**

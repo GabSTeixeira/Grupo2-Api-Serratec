@@ -1,19 +1,12 @@
 package br.com.loja_gp2.loja_gp2.dto.PedidoDTO;
 
-import java.util.Date;
-
 import br.com.loja_gp2.loja_gp2.model.Enum.EnumTipoPagamento;
 
 public abstract class PedidoBaseDTO {
     private long id;
-    private Date dataPedido;
     private EnumTipoPagamento formaPagamento;
-    private double descontoItens;
-    private double acrescimoItens;
     private double acrescimoPedido;
     private double descontoPedido;
-    private double valorBruto;
-    private double valorLiquido;
     private String observacao;
     
     public long getId() {
@@ -22,30 +15,15 @@ public abstract class PedidoBaseDTO {
     public void setId(long id) {
         this.id = id;
     }
-    public Date getDataPedido() {
-        return dataPedido;
-    }
-    public void setDataPedido(Date dataPedido) {
-        this.dataPedido = dataPedido;
-    }
+
     public EnumTipoPagamento getFormaPagamento() {
         return formaPagamento;
     }
+
     public void setFormaPagamento(EnumTipoPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
-    public double getDescontoItens() {
-        return descontoItens;
-    }
-    public void setDescontoItens(double descontoItens) {
-        this.descontoItens = descontoItens;
-    }
-    public double getAcrescimoItens() {
-        return acrescimoItens;
-    }
-    public void setAcrescimoItens(double acrescimoItens) {
-        this.acrescimoItens = acrescimoItens;
-    }
+    
     public double getAcrescimoPedido() {
         return acrescimoPedido;
     }
@@ -60,22 +38,6 @@ public abstract class PedidoBaseDTO {
 
     public void setDescontoPedido(double descontoPedido) {
         this.descontoPedido = descontoPedido;
-    }
-
-    public double getValorBruto() {
-        return valorBruto;
-    }
-
-    public void setValorBruto(double valorBruto) {
-        this.valorBruto = valorBruto;
-    }
-
-    public double getValorLiquido() {
-        return valorLiquido;
-    }
-
-    public void setValorLiquido(double valorLiquido) {
-        this.valorLiquido = valorLiquido;
     }
 
     public String getObservacao() {

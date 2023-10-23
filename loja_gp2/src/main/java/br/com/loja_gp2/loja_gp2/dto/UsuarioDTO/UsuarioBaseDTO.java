@@ -5,7 +5,6 @@ public class UsuarioBaseDTO {
     private String nome;
     private String email;
 
-
     public long getId() {
         return id;
     }
