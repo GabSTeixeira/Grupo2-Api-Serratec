@@ -73,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
              * Aqui vamos informar as rotas que vão ou não precisar de autenticação e ou autorização.
              */
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/api/usuario/cadastrar", "/api/usuario/login", "/swagger-ui/index.html#/")
+            .antMatchers(HttpMethod.POST, "/api/usuarios/cadastrar", "/api/usuarios/login", "/swagger-ui/index.html#/")
             .permitAll()// informo que todos podem acessar esses endpoints sem autenticação.
             .and()
             .authorizeRequests()
