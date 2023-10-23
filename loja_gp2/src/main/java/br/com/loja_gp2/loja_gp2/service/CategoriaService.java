@@ -111,8 +111,8 @@ public class CategoriaService {
         }
 
         logService.registrarLog(new Log(
-                    Produto.class.getSimpleName(),
-                    EnumTipoAlteracaoLog.UPDATE,
+                    Categoria.class.getSimpleName(),
+                    EnumTipoAlteracaoLog.CREATE,
                     ObjetoToJson.conversor(categoria),
                     ObjetoToJson.conversor(categoria),
                     usuario));
