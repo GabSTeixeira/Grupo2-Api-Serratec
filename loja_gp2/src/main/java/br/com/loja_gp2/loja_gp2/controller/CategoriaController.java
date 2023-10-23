@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
-@RequestMapping("/api/categoria")
+@RequestMapping("/api/categorias")
 public class CategoriaController {
 
     @Autowired
@@ -145,7 +145,7 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.OK).body(categoriaAlterada);
     }
 
-    @PutMapping("/desativar/{id}")
+    @PutMapping("/{id}/desativar")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
@@ -166,7 +166,7 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/ativar/{id}")
+    @PutMapping("/{id}/ativar")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",

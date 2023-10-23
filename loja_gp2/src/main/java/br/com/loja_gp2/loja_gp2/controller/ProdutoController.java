@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 @RestController
-@RequestMapping("/api/produto")
+@RequestMapping("/api/produtos")
 public class ProdutoController {
     
     @Autowired
@@ -73,7 +73,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoEncontrado);
     }
 
-    @GetMapping("/categoria/{id}")
+    @GetMapping("/{id}/categorias")
     @Operation(
         summary = "Obtem por id",
         description = "Esta requisição obtem todos os produtos ativos por id de uma categoria"
@@ -101,7 +101,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(listaProdutosAtivos);
     }
 
-    @GetMapping("/imagem/{id}")
+    @GetMapping("/{id}/imagem")
     @Operation(
         summary = "download imagem",
         description = "faz o download de uma imagem de um produto, caso o usuario que fez a requisição for um cliente ou anonimo, apenas produtos ativos serão levados em consideração"
@@ -160,7 +160,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
-    @PostMapping(path = "/imagem/{id}", consumes = "multipart/form-data")
+    @PostMapping(path = "/{id}/imagem", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "upload imagem",
@@ -203,7 +203,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoAlterado);
     }
 
-    @PutMapping("/desativar/{id}")
+    @PutMapping("/{id}/desativar")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
@@ -223,7 +223,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-     @PutMapping("/ativar/{id}")
+     @PutMapping("/{id}/ativar")
      @PreAuthorize("hasAuthority('ADMIN')")
      @Operation(
         summary = "Ativa por id",

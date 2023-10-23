@@ -43,7 +43,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private boolean status;
     @OneToMany(mappedBy = "usuario")
-    private List<Pedido> listaPedido;
+    private transient List<Pedido> listaPedido;
     @OneToMany(mappedBy = "usuario")
     private transient List<Log> listaLog;
     // transient é para as conversões objetos em json funcionar sem entrar em loop

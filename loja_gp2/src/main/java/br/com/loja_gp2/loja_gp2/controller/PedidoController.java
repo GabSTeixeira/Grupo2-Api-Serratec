@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
-@RequestMapping("/api/pedido")
+@RequestMapping("/api/pedidos")
 public class PedidoController {
     
     @Autowired
