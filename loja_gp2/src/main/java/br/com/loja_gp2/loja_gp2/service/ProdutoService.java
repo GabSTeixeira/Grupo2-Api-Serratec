@@ -101,7 +101,7 @@ public class ProdutoService {
      * @return Uma lista de ProdutoResponseDTO
      */
     public List<ProdutoResponseDTO> buscarTodasProdutosInativos(){
-        List<Produto> produtosInativos = produtoRepository.findAllByStatus(true);
+        List<Produto> produtosInativos = produtoRepository.findAllByStatus(false);
             
         List<ProdutoResponseDTO> listaProdutoResponse = produtosInativos.stream()
         .map(c -> modelMapper.map(c, ProdutoResponseDTO.class)).collect(Collectors.toList());
