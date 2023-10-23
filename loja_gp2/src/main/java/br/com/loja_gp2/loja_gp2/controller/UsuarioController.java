@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/usuario")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
     
     @Autowired
@@ -155,7 +155,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioAlterado);
     }
 
-    @PutMapping("/desativar/{id}")
+    @PutMapping("/{id}/desativar")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Desativa por id",
@@ -175,7 +175,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
-    @PutMapping("/ativar/{id}")
+    @PutMapping("/{id}/ativar")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
         summary = "Ativa por id",

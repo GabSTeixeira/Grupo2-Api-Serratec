@@ -73,7 +73,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoEncontrado);
     }
 
-    @GetMapping("/{id}/categorias")
+    @GetMapping("/{id}/categoria")
     @Operation(
         summary = "Obtem por id",
         description = "Esta requisição obtem todos os produtos ativos por id de uma categoria"
